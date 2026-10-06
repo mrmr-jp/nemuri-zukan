@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ねむりの図鑑｜あなたの睡眠と生き物くらべ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E7E6EF; --paper:#F3F2F8; --ink:#24224A; --sub:#5E5C80;
+  --sleep:#6F79C4; --awake:#D6D4E3; --moon:#E2B93B; --fossil:#A88C6E; --line:#CFCDE0; --band:rgba(111,121,196,.12);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15142A; --paper:#1E1D38; --ink:#ECEAF7; --sub:#A9A7C8;
+    --sleep:#8D97E0; --awake:#2E2D4D; --moon:#F0CB55; --fossil:#C4A685; --line:#34335A; --band:rgba(141,151,224,.14);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15142A; --paper:#1E1D38; --ink:#ECEAF7; --sub:#A9A7C8;
+  --sleep:#8D97E0; --awake:#2E2D4D; --moon:#F0CB55; --fossil:#C4A685; --line:#34335A; --band:rgba(141,151,224,.14);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;line-height:1.75}
+main{max-width:720px;margin:0 auto;padding:20px 20px 56px}
+h1,h2,.big{font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN",system-ui,sans-serif}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+h1{font-size:clamp(1.6rem,6vw,2.3rem);font-weight:900;line-height:1.3;margin:8px 0 6px;letter-spacing:.02em}
+.lead{color:var(--sub);margin:0 0 24px;font-size:.95rem}
+
+.hero{display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:center;background:var(--paper);border-radius:28px;padding:24px}
+@media (max-width:520px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.dial{width:180px;height:180px}
+.big{font-size:3rem;font-weight:900;line-height:1.1}
+.big small{font-size:1.05rem;font-weight:700;margin:0 4px 0 2px}
+.controls{width:100%}
+.tabs{display:inline-flex;background:var(--awake);border-radius:999px;padding:3px;margin-bottom:12px}
+.tabs button{border:none;padding:4px 14px}
+input[type=range]{width:100%;accent-color:var(--sleep);margin:12px 0 6px}
+.step,.row-btn{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:520px){.step,.row-btn{justify-content:center}}
+.clock{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 4px}
+@media (max-width:520px){.clock{justify-content:center}}
+.clock label{display:flex;flex-direction:column;font-size:.8rem;color:var(--sub)}
+input[type=time],input[type=date]{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;margin-top:2px}
+button{font:inherit;color:var(--ink);background:transparent;border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+button:hover{border-color:var(--sleep)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--moon);outline-offset:2px}
+button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+button.primary{background:var(--sleep);border-color:var(--sleep);color:#fff}
+.hint{font-size:.8rem;color:var(--sub);margin-top:6px}
+[hidden]{display:none!important}
+
+section{margin-top:40px}
+h2{font-size:1.25rem;margin:0 0 14px}
+.verdict{font-size:1.05rem;margin:0 0 16px}
+.kin{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:520px){.kin{grid-template-columns:1fr}}
+.kin div{background:var(--paper);border-radius:18px;padding:14px 16px}
+.kin .e{font-size:2rem;line-height:1}
+.kin b{display:block;margin-top:6px}
+.kin span{font-size:.85rem;color:var(--sub)}
+.tally{display:flex;gap:24px;margin-top:16px;color:var(--sub);font-size:.92rem;flex-wrap:wrap;align-items:center}
+.tally strong{color:var(--ink);font-size:1.2rem}
+.share{margin-left:auto}
+.msg{font-size:.85rem;color:var(--sub);min-height:1.4em;margin-top:8px}
+textarea.copy{width:100%;font:inherit;font-size:.85rem;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+
+.filters{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.filters .lbl{font-size:.82rem;color:var(--sub);margin-right:2px}
+.styledesc{font-size:.88rem;background:var(--paper);border-radius:14px;padding:10px 14px;margin:4px 0 14px}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);font-size:.72rem;color:var(--sub);margin-left:172px;margin-right:64px;margin-bottom:4px}
+.scale span:last-child{text-align:right}
+@media (max-width:520px){.scale{margin-left:0;margin-right:64px}}
+ol{list-style:none;margin:0;padding:0}
+li.row{display:grid;grid-template-columns:164px 1fr 56px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+@media (max-width:520px){li.row{grid-template-columns:1fr 56px}.track{grid-column:1/-1;order:3}li.row details{order:4}}
+.nm{font-size:.88rem;line-height:1.35}
+.nm em{font-style:normal;font-size:.7rem;color:var(--fossil);display:block}
+.nm i{font-style:normal;font-size:.7rem;color:var(--sleep);display:block}
+.track{height:12px;background:var(--awake);border-radius:6px;overflow:hidden}
+.bar{height:100%;background:var(--sleep);border-radius:6px;transition:width .5s ease}
+.ex .bar{background:repeating-linear-gradient(135deg,var(--fossil) 0 6px,transparent 6px 10px);border:1.5px solid var(--fossil)}
+.hrs{text-align:right;font-weight:700;font-size:.9rem}
+li.row.you{background:var(--paper);border-radius:12px;padding:10px 8px;border-bottom:none;margin:4px 0}
+li.row.you .bar{background:var(--moon)}
+li.row.you .nm{font-weight:700}
+details{font-size:.82rem;color:var(--sub)}
+details summary{cursor:pointer}
+li.row details{grid-column:1/-1;margin:0}
+
+.log{background:var(--paper);border-radius:24px;padding:20px}
+.logform{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
+.logform label{display:flex;flex-direction:column;font-size:.8rem;color:var(--sub)}
+.chart{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:200px;align-items:end;padding-top:20px;border-bottom:1.5px solid var(--line)}
+.band{position:absolute;left:0;right:0;background:var(--band);border-top:1px dashed var(--sleep);border-bottom:1px dashed var(--sleep);pointer-events:none}
+.band span{position:absolute;right:4px;top:2px;font-size:.68rem;color:var(--sleep)}
+.col{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.col .v{font-size:.72rem;font-weight:700;margin-bottom:2px}
+.col .b{width:70%;max-width:40px;background:var(--sleep);border-radius:8px 8px 0 0;min-height:2px}
+.col.today .b{background:var(--moon)}
+.col.empty .b{background:transparent;border:1.5px dashed var(--line);border-bottom:none;height:8px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;font-size:.72rem;color:var(--sub);margin-top:4px}
+.stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;font-size:.92rem;color:var(--sub)}
+.stats strong{color:var(--ink);font-size:1.15rem}
+.entries{list-style:none;padding:0;margin:14px 0 0;font-size:.85rem}
+.entries li{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
+.entries button{padding:2px 10px;font-size:.78rem}
+
+li.row[data-n]{cursor:pointer}
+li.row[data-n]:hover .nm{color:var(--sleep)}
+.more{font-size:.72rem;color:var(--sleep);display:block}
+.kin button{all:unset;cursor:pointer;display:block;background:var(--paper);border-radius:18px;padding:14px 16px}
+.kin button:focus-visible{outline:3px solid var(--moon)}
+.card{background:var(--paper);border-radius:24px;padding:20px}
+.quiz{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+.quiz .vs{align-self:center;font-weight:900;color:var(--sub)}
+.qbtn{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:16px 10px;cursor:pointer;text-align:center}
+.qbtn .e{font-size:2.4rem;display:block;line-height:1.1}
+.qbtn b{display:block;margin-top:6px;font-size:.92rem;line-height:1.35}
+.qbtn .qh{display:block;font-weight:900;font-size:1.3rem;margin-top:4px;min-height:1.6em}
+.qbtn.win{border-color:var(--moon);background:var(--paper)}
+.qbtn.lose{opacity:.6}
+.qres{margin:14px 0 8px;font-size:.95rem;min-height:1.5em}
+.qstat{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem;color:var(--sub);margin-top:8px}
+.qstat strong{color:var(--ink)}
+.prog{height:10px;background:var(--awake);border-radius:5px;overflow:hidden;margin:8px 0 14px}
+.prog div{height:100%;background:var(--moon);transition:width .4s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+.tile{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:6px 2px;text-align:center;cursor:pointer;font-size:.62rem;line-height:1.25;min-height:64px}
+.tile .e{font-size:1.5rem;display:block}
+.tile.no{color:var(--sub);cursor:default;opacity:.55}
+.tile.no .e{filter:grayscale(1)}
+dialog{border:none;border-radius:24px;padding:0;max-width:min(520px,calc(100vw - 24px));width:100%;background:var(--paper);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(20,18,40,.55)}
+.dlg{padding:22px 22px 18px;max-height:calc(100vh - 80px);overflow-y:auto}
+.dlg .head{display:flex;gap:14px;align-items:center}
+.dlg .big-e{font-size:3.4rem;line-height:1}
+.dlg h3{font-family:"Zen Maru Gothic",system-ui,sans-serif;font-size:1.3rem;margin:0;line-height:1.3}
+.dlg .sub{font-size:.8rem;color:var(--sub)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:1px 8px;color:var(--sub)}
+.chip.ex{color:var(--fossil);border-color:var(--fossil)}
+.dlg .hbig{font-family:"Zen Maru Gothic",system-ui,sans-serif;font-size:2rem;font-weight:900;margin:14px 0 4px}
+.dlg .lbl{font-size:.75rem;color:var(--sub);margin:14px 0 2px;letter-spacing:.05em}
+.dlg p{margin:0}
+.cmp{background:var(--bg);border-radius:14px;padding:10px 12px;font-size:.9rem;margin-top:4px}
+.cmp small{display:block;color:var(--sub);font-size:.74rem;margin-top:4px}
+.src{font-size:.75rem;color:var(--sub)}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.lnk{font-size:.88rem;color:var(--ink);text-decoration:none;border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;background:var(--bg);display:flex;flex-direction:column;flex:1 1 100%}
+.lnk small{font-size:.7rem;color:var(--sub);margin-top:2px}
+.lnk:hover{border-color:var(--sleep)}
+.dnav{display:flex;justify-content:space-between;gap:8px;margin-top:16px;flex-wrap:wrap}
+.st{font-size:.7rem;letter-spacing:.05em;color:var(--sub);display:block}
+.st.r3{color:var(--moon)}
+.st.r2{color:var(--sleep)}
+.chip.st{display:inline-block}
+#rarCount .st{display:inline}
+.chip.st.r3{border-color:var(--moon)}
+.tile .ts{display:block;font-size:.55rem;color:var(--sub)}
+.tile.r3:not(.no){border-color:var(--moon)}
+.tile.r3 .ts{color:var(--moon)}
+.today{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.today .e{font-size:3.6rem;line-height:1}
+.today b{font-family:"Zen Maru Gothic",system-ui,sans-serif;font-size:1.2rem;display:block}
+.today p{margin:6px 0 10px;font-size:.9rem}
+.cardprev{margin-top:12px;text-align:center}
+.cardprev img{width:min(100%,320px);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.2)}
+main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.ptitle{font-size:1.5rem;margin:0 0 16px;padding-bottom:10px;border-bottom:3px solid var(--moon);display:flex;gap:8px;align-items:center}
+.page section:first-of-type{margin-top:8px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--paper);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+.tabbar button{border:none;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 2px;font-size:.75rem;color:var(--sub)}
+.tabbar button span:first-child{font-size:1.3rem;line-height:1.2}
+.tabbar button[aria-current=page]{background:var(--ink);color:var(--paper);font-weight:700}
+.tabbar button[aria-current=page] span:first-child{filter:none}
+@media (min-width:760px){.tabbar{max-width:560px;margin:0 auto 12px;border:1px solid var(--line);border-radius:22px;bottom:env(safe-area-inset-bottom,0px)}}
+.filterbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:8px 0 6px;margin:0 -4px 8px;padding-left:4px;padding-right:4px}
+.filterbar .filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;margin-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filterbar .filters::-webkit-scrollbar{display:none}
+.filterbar .filters button{flex:0 0 auto}
+.now{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--paper);border-left:5px solid var(--moon);border-radius:10px;padding:8px 12px;font-size:.9rem}
+.now strong{font-family:"Zen Maru Gothic",system-ui,sans-serif;font-size:1.05rem}
+.now button{padding:2px 10px;font-size:.78rem;margin-left:auto}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+@media (max-width:520px){.pick{grid-template-columns:1fr}}
+.pick button{display:flex;align-items:center;gap:10px;text-align:left;border-radius:14px;padding:10px 12px;background:var(--bg)}
+.pick button .e{font-size:1.8rem}
+.pick button small{display:block;color:var(--sub);font-size:.75rem}
+.pick button[aria-checked=true]{border:2.5px solid var(--moon);background:var(--paper)}
+.pick button[aria-checked=true] .chk{display:inline}
+.pick .chk{display:none;color:var(--moon);font-weight:900;margin-left:auto}
+.cardwrap{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}
+@media (max-width:520px){.cardwrap{grid-template-columns:110px 1fr;gap:12px}}
+.cardwrap .cardprev{margin:0}
+.cardwrap .cardprev img{width:100%;border-radius:10px}
+.cardnow{margin:0 0 10px;font-size:.92rem}
+.cardnow strong{font-family:"Zen Maru Gothic",system-ui,sans-serif;font-size:1.1rem}
+details.notes summary{cursor:pointer;font-weight:700;color:var(--ink);font-size:.88rem}
+details.notes[open] summary{margin-bottom:10px}
+.notes{margin-top:40px;font-size:.8rem;color:var(--sub);background:var(--paper);border-radius:18px;padding:16px 18px}
+.notes p{margin:0 0 8px}
+.notes ul{margin:0 0 10px;padding-left:1.2em}
+@media (prefers-reduced-motion:reduce){.bar{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<noscript><div style="background:#FFF4D6;color:#24224A;border-radius:14px;padding:14px 16px;margin:12px 0;font-size:.95rem;line-height:1.6">このページはJavaScriptで動きます。いまの表示では動かせない状態です。<br>ファイルのプレビューではなく、公開されているページのURLをブラウザで開いてください。</div></noscript>
+  <div class="top">
+    <h1 data-i="title">ねむりの図鑑</h1>
+    <button id="lang" aria-label="Language" style="white-space:nowrap;flex-shrink:0;margin-top:10px">EN</button>
+  </div>
+  <p class="lead" data-i="lead">あなたの睡眠時間を入れると、いまを生きる動物や、もういない生き物たちと並べて比べます。</p>
+
+
+  <div class="page" data-page="home">
+  <h2 class="ptitle">🌙 <span data-i="tabHome">くらべる</span></h2>
+  <div class="hero">
+    <svg class="dial" viewBox="0 0 180 180" role="img" aria-labelledby="pct">
+      <circle cx="90" cy="90" r="72" fill="none" stroke="var(--awake)" stroke-width="22"/>
+      <circle id="arc" cx="90" cy="90" r="72" fill="none" stroke="var(--sleep)" stroke-width="22" stroke-linecap="round" transform="rotate(-90 90 90)" stroke-dasharray="0 999"/>
+      <text x="90" y="86" text-anchor="middle" font-size="28">🌙</text>
+      <text id="pct" x="90" y="114" text-anchor="middle" font-size="13" fill="var(--sub)"></text>
+    </svg>
+    <div class="controls">
+      <div class="tabs" role="group">
+        <button data-mode="hours" aria-pressed="true" data-i="modeHours">時間で入力</button>
+        <button data-mode="clock" aria-pressed="false" data-i="modeClock">時刻で入力</button>
+      </div>
+      <div class="big" id="hv"></div>
+      <div id="pHours">
+        <label for="h" class="hint" data-i="sliderLabel">1日の睡眠時間（昼寝を含む）</label>
+        <input id="h" type="range" min="0" max="24" step="any" value="7">
+        <div class="step">
+          <button data-d="-0.5">−30<span data-i="min">分</span></button>
+          <button data-d="-0.25">−15<span data-i="min">分</span></button>
+          <button data-d="0.25">＋15<span data-i="min">分</span></button>
+          <button data-d="0.5">＋30<span data-i="min">分</span></button>
+        </div>
+      </div>
+      <div id="pClock" hidden>
+        <div class="clock">
+          <label><span data-i="bed">寝た時刻</span><input id="bed" type="time" value="23:30"></label>
+          <label><span data-i="wake">起きた時刻</span><input id="wake" type="time" value="06:30"></label>
+        </div>
+        <div class="hint" data-i="clockHint">日付をまたいでも自動で計算します。</div>
+      </div>
+    </div>
+  </div>
+
+  <section aria-live="polite">
+    <h2 data-i="kinTitle">あなたの眠りは、この生き物たちに近い</h2>
+    <p class="verdict" id="verdict"></p>
+    <div class="kin" id="kin"></div>
+    <div class="tally"><span id="tally"></span></div>
+  </section>
+
+  <section>
+    <h2 data-i="cardTitle">結果カード</h2>
+    <div class="card">
+      <p class="hint" style="margin:0 0 10px" data-i="cardLead">カードにする生き物を、あなたに近い3種から選べます。</p>
+      <div class="pick" id="cardPick" role="radiogroup"></div>
+      <div class="cardwrap">
+        <div class="cardprev" id="cardPrev"></div>
+        <div>
+          <p class="cardnow" id="cardNow"></p>
+          <div class="row-btn"><button class="primary" id="cardBtn"></button><button id="share" data-i="share">テキストでシェア</button></div>
+          <div class="msg" id="shareMsg"></div>
+          <textarea class="copy" id="shareBox" rows="3" readonly hidden></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-i="todayTitle">今日の一匹</h2>
+    <div class="card today" id="today"></div>
+  </section>
+  </div>
+
+  <div class="page" data-page="quiz" hidden>
+  <h2 class="ptitle">❓ <span data-i="tabQuiz">クイズ</span></h2>
+
+  <section>
+    <h2 data-i="quizTitle">どっちが長く眠る？</h2>
+    <div class="card">
+      <p class="hint" style="margin:0 0 12px" data-i="quizLead">長く眠ると思うほうをタップしてください。答えると豆知識と、図鑑への登録がついてきます。</p>
+      <div class="quiz">
+        <button class="qbtn" id="q0"></button>
+        <span class="vs">VS</span>
+        <button class="qbtn" id="q1"></button>
+      </div>
+      <div class="qres" id="qres" aria-live="polite"></div>
+      <div class="row-btn"><button class="primary" id="qnext" data-i="qNext">次の問題</button><button id="qmore" hidden></button></div>
+      <div class="qstat" id="qstat"></div>
+    </div>
+  </section>
+  </div>
+
+  <div class="page" data-page="list" hidden>
+  <h2 class="ptitle">📋 <span data-i="tabList">いちらん</span></h2>
+
+  <section>
+    <p class="hint" style="margin:0 0 10px" data-i="listLead">上のボタンで、なかまごとに切り替えられます。行をタップすると豆知識が開きます。</p>
+    <div class="filterbar">
+    <div class="filters" role="group" aria-label="category">
+      <button data-g="all" aria-pressed="true" data-i="gAll">🌏 すべて</button>
+      <button data-g="mammal" aria-pressed="false" data-i="gMammal">🐾 哺乳類</button>
+      <button data-g="bird" aria-pressed="false" data-i="gBird">🐦 鳥類</button>
+      <button data-g="reptile" aria-pressed="false" data-i="gReptile">🦎 爬虫類</button>
+      <button data-g="amphibian" aria-pressed="false" data-i="gAmphibian">🐸 両生類</button>
+      <button data-g="fish" aria-pressed="false" data-i="gFish">🐟 魚類</button>
+      <button data-g="insect" aria-pressed="false" data-i="gInsect">🐜 昆虫</button>
+      <button data-g="extinct" aria-pressed="false" data-i="gExtinct">🦴 絶滅（推定）</button>
+    </div>
+    <div class="now" id="listStatus" aria-live="polite"></div>
+    </div>
+    <div class="scale" aria-hidden="true"><span>0</span><span>6</span><span>12</span><span>18</span><span>24h</span></div>
+    <ol id="list"></ol>
+  </section>
+  </div>
+
+  <div class="page" data-page="zukan" hidden>
+  <h2 class="ptitle">📖 <span data-i="tabZukan">図鑑</span></h2>
+
+  <section>
+    <div class="card">
+      <p class="hint" style="margin:0" data-i="collLead">生き物の詳細を開いたり、クイズに出てきたりすると図鑑に登録されます。全種の発見をめざしてみてください。</p>
+      <div class="prog"><div id="progbar"></div></div>
+      <div class="qstat" style="margin:0 0 6px"><span id="collCount"></span></div>
+      <div class="qstat" style="margin:0 0 12px" id="rarCount"></div>
+      <p class="hint" style="margin:0 0 12px" data-i="rarRule">レア度の基準：★★★＝絶滅種・0時間・1時間未満・19時間以上・脳の半分ずつ／細切れに眠る生き物、★★＝哺乳類以外・立ち寝・16時間以上・3時間以下、★＝それ以外。</p>
+      <div class="row-btn" style="margin-bottom:14px"><button class="primary" id="rand" data-i="rand">🎲 ランダムに出会う</button></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+  </div>
+
+  <details class="notes">
+    <summary data-i="notesTitle">出典・注意事項・プライバシー</summary>
+    <div id="notes"></div>
+    <p data-i="refsTitle">主な出典</p>
+    <ul id="refs"></ul>
+    <p data-i="privacy">🔒 入力した睡眠時間、図鑑の発見記録、クイズの成績は、この端末のブラウザの中にだけ保存されます。外部には送信されず、アカウント登録もいりません。</p>
+    <p data-i="disclaimer">このアプリは医療・健康上の助言を目的としたものではありません。</p>
+  </details>
+</main>
+<nav class="tabbar" aria-label="menu">
+  <button data-tab="home" aria-current="page"><span aria-hidden="true">🌙</span><span data-i="tabHome">くらべる</span></button>
+  <button data-tab="quiz"><span aria-hidden="true">❓</span><span data-i="tabQuiz">クイズ</span></button>
+  <button data-tab="list"><span aria-hidden="true">📋</span><span data-i="tabList">いちらん</span></button>
+  <button data-tab="zukan"><span aria-hidden="true">📖</span><span data-i="tabZukan">図鑑</span></button>
+</nav>
+<dialog id="dlg" aria-labelledby="dlgTitle"><div class="dlg" id="dlgBody"></div></dialog>
+
+<script>
+// 公開URL：GitHub Pages上では自動で自分のURLになる（それ以外はclaude.aiの公開版）
+const PUBLIC_URL=/\.github\.io$/.test(location.hostname)?location.origin+location.pathname.replace(/index\.html$/,""):"https://claude.ai/artifact/VUKWNc1byzrK3raTuEjxCe";
+
+const SRC={
+ UW:{ja:"Chudler, E.H.『How Much Do Animals Sleep?』Neuroscience for Kids, ワシントン大学（Siegel「Sleep function: an evolutionary perspective」、Campbell & Tobler 1984 などの文献をまとめた表）",en:"Chudler, E.H. \"How Much Do Animals Sleep?\" Neuroscience for Kids, University of Washington (a table adapted from Siegel, \"Sleep function: an evolutionary perspective\", Campbell & Tobler 1984, and other sources)"},
+ PEN:{ja:"Libourel, P.-A. et al. (2023) Science 382: 1026–1031（ヒゲペンギンのマイクロスリープ）",en:"Libourel, P.-A. et al. (2023) Science 382: 1026–1031"},
+ SLO:{ja:"Rattenborg, N.C. et al. (2008) Biology Letters 4: 402–405（野生ナマケモノの脳波測定）",en:"Rattenborg, N.C. et al. (2008) Biology Letters 4: 402–405"},
+ ELE:{ja:"Gravett, N. et al. (2017) PLOS ONE 12(3): e0171903（野生アフリカゾウ）",en:"Gravett, N. et al. (2017) PLOS ONE 12(3): e0171903"},
+ FRI:{ja:"Rattenborg, N.C. et al. (2016) Nature Communications 7: 12468（グンカンドリの飛行中睡眠）",en:"Rattenborg, N.C. et al. (2016) Nature Communications 7: 12468"},
+ DUC:{ja:"Rattenborg, N.C. et al. (1999) Nature 397: 397–398（マガモの片目睡眠）",en:"Rattenborg, N.C. et al. (1999) Nature 397: 397–398"},
+ OECD:{ja:"OECD Gender Data Portal（2021）各国の1日の睡眠時間（日本：約7時間22分）",en:"OECD Gender Data Portal (2021), time spent sleeping (Japan: about 7 h 22 min)"},
+ MEI:{ja:"Xu, X. & Norell, M.A. (2004) Nature 431: 838–841（メイ・ロンの記載論文）",en:"Xu, X. & Norell, M.A. (2004) Nature 431: 838–841"},
+ MSL:{ja:"Savage, V.M. & West, G.B. (2007) PNAS 104: 1051–1056（哺乳類83種の睡眠データ。R言語ggplot2のmsleepデータセット）",en:"Savage, V.M. & West, G.B. (2007) PNAS 104: 1051–1056 (83 mammals; the msleep dataset in R ggplot2)"},
+ SPW:{ja:"Miller, P.J.O. et al. (2008) Current Biology 18: R21–R23（マッコウクジラの漂い潜水）",en:"Miller, P.J.O. et al. (2008) Current Biology 18: R21–R23"},
+ SEA:{ja:"Kendall-Bar, J.M. et al. (2023) Science 380: 260–265（キタゾウアザラシの海中睡眠）",en:"Kendall-Bar, J.M. et al. (2023) Science 380: 260–265"},
+ FLY:{ja:"FlyBase 遺伝子・系統データベース FBal0221022（野生型ショウジョウバエの1日平均睡眠 965分）",en:"FlyBase report FBal0221022 (wild-type Drosophila: 965 min of sleep per day)"},
+ ANT:{ja:"Cassill, D.L. et al. (2009) Polyphasic wake/sleep episodes in the fire ant, Solenopsis invicta",en:"Cassill, D.L. et al. (2009) Polyphasic wake/sleep episodes in the fire ant, Solenopsis invicta"},
+ BEE:{ja:"Kaiser, W. & Steiner-Kaiser, J. (1983) Nature（ミツバチの睡眠を初めて報告）",en:"Kaiser, W. & Steiner-Kaiser, J. (1983) Nature (first report of sleep in honeybees)"},
+ CT:{ja:"Campbell, S.S. & Tobler, I. (1984) Neuroscience & Biobehavioral Reviews 8: 269–300（150種以上の睡眠時間をまとめた総説）",en:"Campbell, S.S. & Tobler, I. (1984) Neuroscience & Biobehavioral Reviews 8: 269–300 (review of sleep in over 150 species)"},
+ DRG:{ja:"Shein-Idelson, M. et al. (2016) Science 352: 590–595（フトアゴヒゲトカゲの脳波睡眠）",en:"Shein-Idelson, M. et al. (2016) Science 352: 590–595"},
+ CAV:{ja:"Duboué, E.R., Keene, A.C. & Borowsky, R.L. (2011) Current Biology 21: 671–676（メキシコの洞窟魚の睡眠）",en:"Duboué, E.R., Keene, A.C. & Borowsky, R.L. (2011) Current Biology 21: 671–676"},
+ GEN:{ja:"動物園・図鑑などで一般に紹介される値（学術的な一次測定ではない）",en:"Commonly cited figure from zoos and field guides (not a primary measurement)"},
+ EST:{ja:"本アプリ独自の推定（近縁種からの類推）",en:"This app's own estimate, inferred from living relatives"}
+};
+
+/* n:名前 ne:英名 e:絵文字 h:時間 t:living/extinct r:信頼度 s:出典 k:眠り方 m/me:説明 */
+const D=[
+ {n:"コアラ",sci:"Phascolarctos cinereus",ne:"Koala",e:"🐨",h:20,g:"mammal",t:"living",r:"B",s:["GEN"],m:"消化に時間のかかるユーカリ食。省エネのため1日18〜22時間眠ると紹介されることが多い動物です。",me:"Its eucalyptus diet is slow to digest, so it is often said to sleep 18–22 hours to save energy."},
+ {n:"トビイロホオヒゲコウモリ",sci:"Myotis lucifugus",ne:"Little brown bat",e:"🦇",h:19.9,g:"mammal",t:"living",r:"A",s:["UW"],m:"活動するのは虫が飛ぶ夕方の数時間だけ。",me:"Active only for the few evening hours when insects fly."},
+ {n:"キタオポッサム",sci:"Didelphis virginiana",ne:"North American opossum",e:"🐾",h:19.4,g:"mammal",t:"living",r:"A",s:["UW"],m:"北米の有袋類。危険を感じると気絶したように動かなくなる「死んだふり」で知られ、英語の play possum（たぬき寝入りする）の語源です。",me:"A North American marsupial famous for playing dead when threatened — the origin of the phrase \"playing possum\"."},
+ {n:"オオアルマジロ",sci:"Priodontes maximus",ne:"Giant armadillo",e:"🐾",h:18.1,g:"mammal",t:"living",r:"A",s:["UW"],m:"夜行性で、巣穴で長く眠ります。",me:"Nocturnal; sleeps long hours in its burrow."},
+ {n:"ニシキヘビ",sci:"Python sebae",ne:"Python",e:"🐍",h:18,g:"reptile",t:"living",r:"A",s:["UW","CT"],m:"大きな獲物を食べたあとは、じっと消化を待ちます。アフリカニシキヘビの記録では、空腹時15.6時間、食後20.4時間でした。",me:"After a big meal, it lies still and digests. One African python slept 15.6 h when hungry and 20.4 h after feeding."},
+ {n:"ヨザル",sci:"Aotus trivirgatus",ne:"Owl monkey",e:"🐒",h:17,g:"mammal",t:"living",r:"A",s:["UW"],m:"唯一の夜行性の真猿類。",me:"The only truly nocturnal monkey."},
+ {n:"ヒト（赤ちゃん）",sci:"Homo sapiens",ne:"Human (infant)",e:"👶",h:16,g:"mammal",t:"living",r:"A",s:["UW"],m:"生まれたばかりのヒトは、1日の3分の2を眠って過ごします。",me:"Newborn humans spend two-thirds of the day asleep."},
+ {n:"トラ",sci:"Panthera tigris",ne:"Tiger",e:"🐯",h:15.8,g:"mammal",t:"living",r:"A",s:["UW"],m:"狩りは短く、休息は長く。",me:"Short hunts, long rests."},
+ {n:"ツパイ",sci:"Tupaia glis",ne:"Tree shrew",e:"🐾",h:15.8,g:"mammal",t:"living",r:"A",s:["UW"],m:"東南アジアの小型哺乳類。霊長類に近い仲間です。",me:"A small Southeast Asian mammal, a close relative of primates."},
+ {n:"リス",sci:"Sciurus",ne:"Squirrel",e:"🐿️",h:14.9,g:"mammal",t:"living",r:"A",s:["UW"],m:"秋に木の実を地面に埋めて蓄えます。掘り出し忘れた実が芽を出し、森を広げる手助けにもなっています。",me:"It buries nuts in autumn; the ones it forgets sprout and help forests spread."},
+ {n:"ウエスタンヒキガエル",sci:"Anaxyrus boreas",ne:"Western toad",e:"🐸",h:14.6,g:"amphibian",t:"living",r:"A",s:["UW"],m:"両生類にも、眠りに近い休息があります。",me:"Amphibians have a sleep-like rest too."},
+ {n:"フェレット",sci:"Mustela furo",ne:"Ferret",e:"🐾",h:14.5,g:"mammal",t:"living",r:"A",s:["UW"],m:"イタチの仲間の家畜で、古くからウサギを巣穴から追い出す狩りに使われてきました。",me:"A domesticated relative of weasels, long used to chase rabbits out of burrows."},
+ {n:"ゴールデンハムスター",sci:"Mesocricetus auratus",ne:"Golden hamster",e:"🐹",h:14.3,g:"mammal",t:"living",r:"A",s:["UW"],m:"ペットのゴールデンハムスターの多くは、1930年にシリアで捕獲された一家族の子孫と言われています。",me:"Most pet golden hamsters are said to descend from one family captured in Syria in 1930."},
+ {n:"カモノハシ",sci:"Ornithorhynchus anatinus",ne:"Platypus",e:"🐾",h:14,g:"mammal",t:"living",r:"A",s:["UW"],m:"卵を産む哺乳類。レム睡眠が哺乳類でもっとも多い動物として知られます。",me:"An egg-laying mammal known for having the most REM sleep of any mammal."},
+ {n:"ライオン",sci:"Panthera leo",ne:"Lion",e:"🦁",h:13.5,g:"mammal",t:"living",r:"A",s:["UW"],m:"群れで守り合えるので、安心して長く眠れます。",me:"Safety in the pride lets it sleep long and deep."},
+ {n:"スナネズミ",sci:"Meriones unguiculatus",ne:"Gerbil",e:"🐁",h:13.1,g:"mammal",t:"living",r:"A",s:["UW"],m:"乾燥地の動物で、尿を濃くして水分をむだにせず、水をほとんど飲まずに暮らせます。",me:"A dry-land animal that concentrates its urine and can live while drinking very little."},
+ {n:"ラット",sci:"Rattus norvegicus",ne:"Rat",e:"🐀",h:12.6,g:"mammal",t:"living",r:"A",s:["UW"],m:"くすぐられると、人には聞こえない超音波で「笑う」ような声を出すことが研究で知られています。",me:"Studies show rats make laugh-like ultrasonic chirps, too high for us to hear, when tickled."},
+ {n:"イエネコ",sci:"Felis catus",ne:"Domestic cat",e:"🐈",h:12.1,g:"mammal",t:"living",r:"A",s:["UW"],m:"「寝子」が語源という説もあります。",me:"In Japanese, one theory says \"neko\" (cat) comes from \"sleeping child\"."},
+ {n:"チーター",sci:"Acinonyx jubatus",ne:"Cheetah",e:"🐆",h:12.1,g:"mammal",t:"living",r:"A",s:["UW"],m:"陸上最速で時速100kmを超えますが、全力で走れるのは数百メートルほどです。",me:"The fastest land animal, topping 100 km/h, but it can sprint only a few hundred metres."},
+ {n:"ハツカネズミ",sci:"Mus musculus",ne:"House mouse",e:"🐭",h:12.1,g:"mammal",t:"living",r:"A",s:["UW"],m:"短い睡眠を何度もくり返します。",me:"Sleeps in many short bouts."},
+ {n:"アカゲザル",sci:"Macaca mulatta",ne:"Rhesus monkey",e:"🐒",h:11.8,g:"mammal",t:"living",r:"A",s:["UW"],m:"血液型の「Rh」は、このサルの英名 rhesus（リーサス）の頭文字から来ています。",me:"The \"Rh\" in blood types comes from this monkey's name, rhesus."},
+ {n:"ニワトリ",sci:"Gallus gallus domesticus",ne:"Chicken",e:"🐔",h:11.7,g:"bird",t:"living",r:"A",s:["UW"],m:"祖先は東南アジアの森にすむセキショクヤケイという野鳥です。",me:"Its ancestor is the red junglefowl, a wild bird of Southeast Asian forests."},
+ {n:"ヒゲペンギン",sci:"Pygoscelis antarcticus",ne:"Chinstrap penguin",e:"🐧",h:11,g:"bird",t:"living",r:"A",s:["PEN"],k:"micro",m:"子育て中は約4秒の居眠りを1日1万回以上。合計すると約11時間。",me:"While nesting, it takes over 10,000 naps a day of about 4 seconds each — around 11 hours in total."},
+ {n:"ジャガー",sci:"Panthera onca",ne:"Jaguar",e:"🐆",h:10.8,g:"mammal",t:"living",r:"A",s:["UW"],m:"ネコ科の中でも咬む力が特に強く、カメの甲羅をかみ砕くこともあります。",me:"Among the strongest biters of all cats — strong enough to crack turtle shells."},
+ {n:"アヒル",sci:"Anas platyrhynchos domesticus",ne:"Duck",e:"🦆",h:10.8,g:"bird",t:"living",r:"A",s:["UW","DUC"],k:"half",m:"群れの端にいるカモは、外側の目を開けたまま脳の半分だけで眠ることが確かめられています。",me:"Ducks at the edge of a group sleep with half the brain, keeping the outward-facing eye open."},
+ {n:"イヌ",sci:"Canis familiaris",ne:"Dog",e:"🐕",h:10.6,g:"mammal",t:"living",r:"A",s:["UW"],m:"年齢や運動量で差が大きい動物です。",me:"Varies widely with age and activity."},
+ {n:"ホシバナモグラ",sci:"Condylura cristata",ne:"Star-nosed mole",e:"🐾",h:10.3,g:"mammal",t:"living",r:"A",s:["UW"],m:"鼻先の22本の触手で、獲物かどうかを一瞬で判断します。哺乳類でもっとも素早く食べる動物の一つです。",me:"Its 22 nose tentacles identify prey in an instant — one of the fastest eaters among mammals."},
+ {n:"ヒヒ",sci:"Papio",ne:"Baboon",e:"🐒",h:10.3,g:"mammal",t:"living",r:"A",s:["UW"],m:"群れの中の順位が厳しく、毛づくろいで仲間との関係を保っています。",me:"Lives in groups with strict rank, keeping friendships through grooming."},
+ {n:"ヨーロッパハリネズミ",sci:"Erinaceus europaeus",ne:"European hedgehog",e:"🦔",h:10.1,g:"mammal",t:"living",r:"A",s:["UW"],m:"背中の針は毛が変化したもので、5000本以上あります。",me:"Its spines are modified hairs — more than 5,000 of them."},
+ {n:"リスザル",sci:"Saimiri sciureus",ne:"Squirrel monkey",e:"🐒",h:9.9,g:"mammal",t:"living",r:"A",s:["UW"],m:"体の大きさに対する脳の割合が、霊長類の中でもとても大きいサルです。",me:"Its brain is very large for its body size, even among primates."},
+ {n:"キツネ",sci:"Vulpes vulpes",ne:"Fox",e:"🦊",h:9.75,g:"mammal",t:"living",r:"A",s:["UW"],m:"雪の下の獲物に飛びかかるとき、地球の磁場を手がかりに方向を決めている可能性が指摘されています。",me:"When pouncing on prey under snow, it may use Earth's magnetic field to aim."},
+ {n:"チンパンジー",sci:"Pan troglodytes",ne:"Chimpanzee",e:"🐵",h:9.7,g:"mammal",t:"living",r:"A",s:["UW"],m:"毎晩、木の上に新しいベッドを作って眠ります。",me:"Builds a fresh bed in the trees every night."},
+ {n:"ナマケモノ（野生）",sci:"Bradypus variegatus",ne:"Sloth (wild)",e:"🦥",h:9.6,g:"mammal",t:"living",r:"A",s:["SLO"],m:"飼育下では約14〜16時間とされてきましたが、野生で測ると意外と短いことが分かりました。",me:"Long thought to sleep 14–16 hours in captivity; wild measurements turned out much shorter."},
+ {n:"モルモット",sci:"Cavia porcellus",ne:"Guinea pig",e:"🐹",h:9.4,g:"mammal",t:"living",r:"A",s:["UW"],m:"ヒトと同じく、ビタミンCを体の中で作ることができません。",me:"Like humans, it cannot make its own vitamin C."},
+ {n:"ウサギ",sci:"Oryctolagus cuniculus",ne:"Rabbit",e:"🐇",h:8.4,g:"mammal",t:"living",r:"A",s:["UW"],m:"目を開けたまま眠ることもあります。",me:"Sometimes sleeps with its eyes open."},
+ {n:"ダチョウ",sci:"Struthio camelus",ne:"Ostrich",e:"🐦",h:8,g:"bird",t:"living",r:"A",s:["UW"],m:"目玉は脳よりも大きく、陸上動物で最大級の目を持っています。",me:"Its eyes are bigger than its brain — among the largest of any land animal."},
+ {n:"ブタ",sci:"Sus scrofa domesticus",ne:"Pig",e:"🐖",h:7.8,g:"mammal",t:"living",r:"A",s:["UW"],m:"ヒトに近い長さです。",me:"Close to human sleep length."},
+ {n:"ヒト（日本の平均）",sci:"Homo sapiens",ne:"Human (Japan average)",e:"🧑",h:7.4,g:"mammal",t:"living",r:"A",s:["OECD"],m:"日本の平均睡眠時間は約7時間20分。OECD諸国の中でも短い部類です。",me:"About 7 h 20 min — among the shortest in the OECD."},
+ {n:"モザンビークティラピア",sci:"Oreochromis mossambicus",ne:"Mozambique tilapia",e:"🐟",h:7,g:"fish",t:"living",r:"A",s:["CT","UW"],m:"刺激への反応の鈍さで睡眠を判定した研究で、6.5〜7.5時間。明るさの条件で長さが変わります。よく「グッピーは7時間」と紹介される値は、この魚の記録が元になっているようです。",me:"6.5–7.5 hours, judged by reduced responsiveness; length changes with lighting. The often-quoted \"guppy sleeps 7 hours\" figure appears to come from this species' record."},
+ {n:"ハイイロアザラシ",sci:"Halichoerus grypus",ne:"Gray seal",e:"🦭",h:6.2,g:"mammal",t:"living",r:"A",s:["UW"],m:"学名 Halichoerus grypus は「かぎ鼻の海のブタ」という意味です。",me:"Its scientific name, Halichoerus grypus, means \"hook-nosed sea pig\"."},
+ {n:"ヒツジ",sci:"Ovis aries",ne:"Sheep",e:"🐑",h:5.9,g:"mammal",t:"living",r:"A",s:["UW"],m:"群れで見張りを分担します。",me:"The flock shares watch duty."},
+ {n:"ヒト（高齢者）",sci:"Homo sapiens",ne:"Human (elderly)",e:"🧓",h:5.5,g:"mammal",t:"living",r:"A",s:["UW"],m:"年齢とともに睡眠は短く、浅くなる傾向があります。",me:"Sleep tends to get shorter and lighter with age."},
+ {n:"ヤギ",sci:"Capra hircus",ne:"Goat",e:"🐐",h:5.3,g:"mammal",t:"living",r:"A",s:["UW"],m:"眠りは浅く、こまめです。",me:"Light, frequent sleep."},
+ {n:"キリン",sci:"Giraffa camelopardalis",ne:"Giraffe",e:"🦒",h:4.5,g:"mammal",t:"living",r:"A",s:["UW"],k:"stand",m:"立ったまま浅く眠ることが多く、首を丸めて眠る深い睡眠は1回数分ほど。野生ではさらに短いとする報告もあります。",me:"Mostly dozes standing; deep sleep with the neck curled lasts only minutes. Wild giraffes may sleep even less."},
+ {n:"ハンドウイルカ",sci:"Tursiops truncatus",ne:"Bottlenose dolphin",e:"🐬",h:4,g:"mammal",t:"living",r:"A",s:["UW"],k:"half",m:"左右の脳を片方ずつ眠らせ、泳ぎながら呼吸を続けます。",me:"Sleeps one brain hemisphere at a time, so it can keep swimming and surfacing to breathe."},
+ {n:"ウシ",sci:"Bos taurus",ne:"Cow",e:"🐄",h:3.9,g:"mammal",t:"living",r:"A",s:["UW"],m:"反すうしながら、うとうとする時間が長い動物です。",me:"Spends long stretches drowsing while chewing cud."},
+ {n:"アジアゾウ（飼育下）",sci:"Elephas maximus",ne:"Asian elephant (captive)",e:"🐘",h:3.9,g:"mammal",t:"living",r:"A",s:["UW"],m:"鏡に映った姿を自分だと認識できることが、実験で確かめられています。",me:"Experiments show it can recognise itself in a mirror."},
+ {n:"ロバ",sci:"Equus asinus",ne:"Donkey",e:"🫏",h:3.1,g:"mammal",t:"living",r:"A",s:["UW"],k:"stand",m:"ウマと同じく、立ったままうとうとできます。",me:"Like horses, it can doze standing up."},
+ {n:"ウマ",sci:"Equus caballus",ne:"Horse",e:"🐎",h:2.9,g:"mammal",t:"living",r:"A",s:["UW"],k:"stand",m:"脚の関節を固定して立ったまま眠れますが、深い眠りには横になる必要があります。",me:"Locks its legs to doze upright, but must lie down for deep sleep."},
+ {n:"アフリカゾウ（野生）",sci:"Loxodonta africana",ne:"African elephant (wild)",e:"🐘",h:2.1,g:"mammal",t:"living",r:"A",s:["ELE","UW"],k:"stand",m:"野生で観測すると1日約2時間。多くは立ったまま眠り、横になるのは数日に一度でした。",me:"About 2 hours a day in the wild, mostly standing; lying down only every few days."},
+ {n:"グンカンドリ（飛行中）",sci:"Fregata minor",ne:"Frigatebird (in flight)",e:"🕊️",h:0.7,g:"bird",t:"living",r:"A",s:["FRI"],k:"half",m:"海の上を何日も飛びながら眠ります。多くは脳の片側ずつですが、両側で眠ることもあります。飛行中の睡眠は1日約40分で、陸の上では12時間以上眠ります。",me:"Sleeps while flying over the ocean for days — mostly one hemisphere at a time, sometimes both. In flight it sleeps about 40 minutes a day; on land, over 12 hours."},
+ {n:"マッコウクジラ",sci:"Physeter macrocephalus",ne:"Sperm whale",e:"🐋",h:1.7,g:"mammal",t:"living",r:"A",s:["SPW"],m:"海面近くで頭を上にして縦向きに漂いながら眠ります。この「漂い潜水」は記録時間の7.1%で、1日に直すと約1.7時間です。",me:"Sleeps drifting vertically, head up, just below the surface. These drift-dives took 7.1% of recorded time — about 1.7 hours a day."},
+ {n:"キタゾウアザラシ（海）",sci:"Mirounga angustirostris",ne:"Northern elephant seal (at sea)",e:"🦭",h:2,g:"mammal",t:"living",r:"A",s:["SEA"],m:"数か月の航海中は、深く潜ってらせん状に沈みながら1回10分ほど眠り、合計で1日約2時間です。",me:"During months at sea it naps about 10 minutes at a time while spiralling down in deep dives — about 2 hours a day."},
+ {n:"キタゾウアザラシ（陸）",sci:"Mirounga angustirostris",ne:"Northern elephant seal (on land)",e:"🦭",h:10.8,g:"mammal",t:"living",r:"A",s:["SEA"],m:"陸に上がると1日約11時間眠り、海での睡眠不足を取り戻します。",me:"Back on land it sleeps about 11 hours a day, catching up on sleep lost at sea."},
+ {n:"ゴンドウクジラ",sci:"Globicephala",ne:"Pilot whale",e:"🐋",h:2.7,g:"mammal",t:"living",r:"A",s:["MSL"],m:"イルカと同じハクジラの仲間です。",me:"A toothed whale, a relative of dolphins."},
+ {n:"カスピカイアザラシ",sci:"Pusa caspica",ne:"Caspian seal",e:"🦭",h:3.5,g:"mammal",t:"living",r:"A",s:["MSL"],m:"カスピ海だけにすむアザラシです。",me:"A seal found only in the Caspian Sea."},
+ {n:"ネズミイルカ",sci:"Phocoena phocoena",ne:"Harbor porpoise",e:"🐬",h:5.6,g:"mammal",t:"living",r:"A",s:["MSL"],k:"half",m:"イルカの仲間と同じく、脳を片方ずつ眠らせて泳ぎ続けます。",me:"Like other dolphins and porpoises, it sleeps one brain hemisphere at a time."},
+ {n:"キタオットセイ",sci:"Callorhinus ursinus",ne:"Northern fur seal",e:"🦭",h:8.7,g:"mammal",t:"living",r:"A",s:["MSL"],k:"half",m:"水の中では脳の半分ずつ、陸の上では脳全体で眠るという、使い分けをする動物です。",me:"Sleeps with half its brain in the water and with the whole brain on land."},
+ {n:"キイロショウジョウバエ",sci:"Drosophila melanogaster",ne:"Fruit fly",e:"🪰",h:16.1,g:"insect",t:"living",r:"A",s:["FLY"],m:"実験室の野生型系統で1日約16時間（965分）。系統や性別で差が大きく、オスはメスより昼に多く眠ります。睡眠研究のモデル生物です。",me:"About 16 hours (965 min) a day in a lab wild-type strain; varies widely by strain and sex, with males napping more by day. A model animal for sleep research."},
+ {n:"ヒアリ（女王アリ）",sci:"Solenopsis invicta",ne:"Fire ant (queen)",e:"🐜",h:9.4,g:"insect",t:"living",r:"A",s:["ANT"],k:"micro",m:"約6分の眠りを1日90回ほど。働きアリより長く、深く眠ります。",me:"About 90 naps of 6 minutes a day — longer and deeper sleep than the workers."},
+ {n:"ヒアリ（働きアリ）",sci:"Solenopsis invicta",ne:"Fire ant (worker)",e:"🐜",h:4.8,g:"insect",t:"living",r:"A",s:["ANT"],k:"micro",m:"約1分の居眠りを1日250回ほど。巣ではいつも8割が起きて働いています。",me:"About 250 one-minute naps a day; around 80% of workers are awake at any moment."},
+ {n:"セイヨウミツバチ（外勤蜂）",sci:"Apis mellifera",ne:"Honeybee (forager)",e:"🐝",h:6.5,g:"insect",t:"living",r:"B",s:["GEN","BEE"],m:"夜にまとめて5〜8時間眠るとされ、眠ると触角が垂れ下がります。表示値はその中央の値です。",me:"Said to sleep 5–8 hours at night, antennae drooping; the figure shown is the midpoint."},
+ {n:"ココノオビアルマジロ",sci:"Dasypus novemcinctus",ne:"Nine-banded armadillo",e:"🐾",h:17.4,g:"mammal",t:"living",r:"A",s:["MSL"],m:"いつも同じ遺伝子を持つ四つ子（一卵性の四つ子）を産む、珍しい動物です。",me:"It almost always gives birth to identical quadruplets."},
+ {n:"ホッキョクジリス",sci:"Urocitellus parryii",ne:"Arctic ground squirrel",e:"🐿️",h:16.6,g:"mammal",t:"living",r:"A",s:["MSL"],m:"冬は冬眠しますが、この値は冬眠ではない通常の睡眠です。",me:"It hibernates in winter, but this figure is ordinary sleep, not hibernation."},
+ {n:"シマリス",sci:"Tamias striatus",ne:"Eastern chipmunk",e:"🐿️",h:15.8,g:"mammal",t:"living",r:"A",s:["MSL"],m:"ほお袋に木の実を詰めて運び、冬は巣穴の貯蔵庫の食料で過ごします。",me:"Carries nuts in its cheek pouches and lives off a burrow pantry in winter."},
+ {n:"テンレック",sci:"Tenrec ecaudatus",ne:"Tenrec",e:"🦔",h:15.6,g:"mammal",t:"living",r:"A",s:["MSL"],m:"マダガスカルにすむ、ハリネズミに似た動物です。",me:"A hedgehog-like mammal from Madagascar."},
+ {n:"ブラリナトガリネズミ",sci:"Blarina brevicauda",ne:"Greater short-tailed shrew",e:"🐾",h:14.9,g:"mammal",t:"living",r:"A",s:["MSL"],m:"唾液に毒を持つ、哺乳類では珍しい動物です。",me:"One of the few mammals with venomous saliva."},
+ {n:"ホッキョクギツネ",sci:"Vulpes lagopus",ne:"Arctic fox",e:"🦊",h:12.5,g:"mammal",t:"living",r:"A",s:["MSL"],m:"冬は白、夏は茶色に毛が生え変わり、マイナス数十度の寒さにも耐えます。",me:"Its coat turns white in winter and brown in summer, and it handles tens of degrees below zero."},
+ {n:"チンチラ",sci:"Chinchilla lanigera",ne:"Chinchilla",e:"🐭",h:12.5,g:"mammal",t:"living",r:"A",s:["MSL"],m:"毛がとても密で、1つの毛穴から数十本の毛が生えています。",me:"Its fur is so dense that dozens of hairs grow from a single follicle."},
+ {n:"スローロリス",sci:"Nycticebus coucang",ne:"Slow loris",e:"🐒",h:11,g:"mammal",t:"living",r:"A",s:["MSL"],m:"ひじの内側の腺から毒を出す、霊長類では珍しい動物です。",me:"One of the very few venomous primates, secreting venom from a gland at its elbow."},
+ {n:"ガラゴ",sci:"Galago senegalensis",ne:"Galago",e:"🐒",h:9.8,g:"mammal",t:"living",r:"A",s:["MSL"],m:"英名「ブッシュベイビー」は、鳴き声が赤ちゃんの泣き声に似ていることから。体長の何倍もジャンプします。",me:"Called \"bushbaby\" for its baby-like cries; it can leap many times its body length."},
+ {n:"マングースキツネザル",sci:"Eulemur mongoz",ne:"Mongoose lemur",e:"🐒",h:9.5,g:"mammal",t:"living",r:"A",s:["MSL"],m:"マダガスカルだけにすみ、季節によって昼型と夜型を切り替えます。",me:"Found only in Madagascar, it switches between day and night activity with the seasons."},
+ {n:"ハリモグラ",sci:"Tachyglossus aculeatus",ne:"Short-beaked echidna",e:"🦔",h:8.6,g:"mammal",t:"living",r:"A",s:["MSL"],m:"カモノハシと同じく、卵を産む哺乳類です。",me:"Like the platypus, an egg-laying mammal."},
+ {n:"デグー",sci:"Octodon degus",ne:"Degu",e:"🐭",h:7.7,g:"mammal",t:"living",r:"A",s:["MSL"],m:"チリ原産の、昼に活動するネズミの仲間です。尻尾の皮は天敵に捕まると外れるようになっています。",me:"A day-active rodent from Chile whose tail skin slips off if a predator grabs it."},
+ {n:"ジェネット",sci:"Genetta genetta",ne:"Genet",e:"🐈",h:6.3,g:"mammal",t:"living",r:"A",s:["MSL"],m:"ネコに似ていますが、ジャコウネコの仲間です。しま模様の長い尾が特徴です。",me:"Looks like a cat but belongs to the civet family, with a long ringed tail."},
+ {n:"ケープハイラックス",sci:"Procavia capensis",ne:"Rock hyrax",e:"🐾",h:5.4,g:"mammal",t:"living",r:"A",s:["MSL"],m:"見た目はネズミですが、ゾウに近い仲間です。",me:"Looks like a rodent but is a relative of elephants."},
+ {n:"ブラジルバク",sci:"Tapirus terrestris",ne:"Brazilian tapir",e:"🐾",h:4.4,g:"mammal",t:"living",r:"A",s:["MSL"],m:"短く伸びた鼻と上唇で葉をつかみます。子どもはウリ坊のようなしま模様です。",me:"Grabs leaves with its short trunk; its babies have stripes like a watermelon."},
+ {n:"ノロジカ",sci:"Capreolus capreolus",ne:"Roe deer",e:"🦌",h:3,g:"mammal",t:"living",r:"A",s:["MSL"],m:"秋に身ごもっても、受精卵が数か月成長を止める「着床遅延」をするシカです。",me:"A deer with delayed implantation: the embryo pauses for months after autumn mating."},
+ {n:"アメリカハコガメ",sci:"Terrapene carolina",ne:"Eastern box turtle",e:"🐢",h:20.4,g:"reptile",t:"living",r:"A",s:["CT"],m:"一日中明るい実験室で、記録時間の8〜9割を眠っていました（1日19〜21.8時間）。表示値はその中央の値です。",me:"Slept 79–91% of the time under constant light (19–21.8 h a day); the midpoint is shown."},
+ {n:"サバクイグアナ",sci:"Dipsosaurus dorsalis",ne:"Desert iguana",e:"🦎",h:17.1,g:"reptile",t:"living",r:"A",s:["CT"],m:"脳波の記録で、1日16.3〜17.8時間眠っていました。",me:"EEG recordings showed 16.3–17.8 hours of sleep a day."},
+ {n:"クチヒロカイマン",sci:"Caiman latirostris",ne:"Broad-snouted caiman",e:"🐊",h:12.5,g:"reptile",t:"living",r:"A",s:["CT"],m:"1頭を1か月にわたって脳波で記録した値です。",me:"From one animal recorded by EEG for a month."},
+ {n:"ツノトカゲ",sci:"Phrynosoma",ne:"Horned lizard",e:"🦎",h:12.3,g:"reptile",t:"living",r:"A",s:["CT"],m:"夕方から眠り始め、ほぼ夜通しまとめて眠ります。",me:"Starts sleeping at dusk and sleeps through the night in one stretch."},
+ {n:"フチゾリリクガメ",sci:"Testudo marginata",ne:"Marginated tortoise",e:"🐢",h:11.5,g:"reptile",t:"living",r:"A",s:["CT"],m:"甲羅の後ろのふちが外側に反り返っているのが名前の由来です。",me:"Named for the flared rear edge of its shell."},
+ {n:"フトアゴヒゲトカゲ",sci:"Pogona vitticeps",ne:"Bearded dragon",e:"🦎",h:8,g:"reptile",t:"living",r:"A",s:["DRG"],m:"夜に6〜10時間、約80秒周期で深い眠りとレム睡眠をくり返します（ヒトは約90分周期）。表示値は中央の値です。",me:"Sleeps 6–10 hours at night, cycling between deep and REM sleep every ~80 seconds (humans: ~90 minutes). The midpoint is shown."},
+ {n:"ヨーロッパヌマガメ",sci:"Emys orbicularis",ne:"European pond turtle",e:"🐢",h:6.9,g:"reptile",t:"living",r:"A",s:["CT"],m:"卵がふ化するときの温度で、子どもがオスになるかメスになるかが決まります。",me:"The temperature of its eggs during incubation decides whether hatchlings are male or female."},
+ {n:"メガネカイマン（子ども）",sci:"Caiman crocodilus",ne:"Spectacled caiman (young)",e:"🐊",h:3,g:"reptile",t:"living",r:"A",s:["CT"],m:"生後4〜6か月の子どもで1日約3時間。眠りは主に深夜2時〜6時でした。",me:"About 3 hours a day in 4–6-month-olds, mostly between 2 and 6 a.m."},
+ {n:"アカウミガメ",sci:"Caretta caretta",ne:"Loggerhead sea turtle",e:"🐢",h:0,g:"reptile",t:"living",r:"A",s:["CT"],m:"以前の研究では睡眠が確認されませんでした（0時間）。動かない時間はあっても、反応の鈍さが見られなかったためです。測定方法の限界とも考えられています。",me:"An early study found no sleep (0 h): it rested, but its responsiveness did not drop. This may reflect the limits of the method."},
+ {n:"アメリカアリゲーター",sci:"Alligator mississippiensis",ne:"American alligator",e:"🐊",h:0,g:"reptile",t:"living",r:"A",s:["CT"],m:"温度を一定にした研究では、睡眠の証拠が見つかりませんでした（0時間）。結論には見直しの余地があります。",me:"With temperature held constant, one study found no evidence of sleep (0 h). The conclusion is open to revision."},
+ {n:"スベイモリ（陸）",sci:"Lissotriton vulgaris",ne:"Smooth newt (on land)",e:"🦎",h:11,g:"amphibian",t:"living",r:"A",s:["CT"],m:"夏は陸で暮らし、1日約11時間休みます。",me:"Lives on land in summer and rests about 11 hours a day."},
+ {n:"スベイモリ（水中）",sci:"Lissotriton vulgaris",ne:"Smooth newt (in water)",e:"🦎",h:4.6,g:"amphibian",t:"living",r:"A",s:["CT"],m:"春は水中で暮らし、休む時間は陸の半分以下の約4.6時間になります。",me:"Lives in water in spring, resting only about 4.6 hours — less than half its time on land."},
+ {n:"ワライガエル",sci:"Pelophylax ridibundus",ne:"Marsh frog",e:"🐸",h:2.4,g:"amphibian",t:"living",r:"A",s:["CT"],m:"眠りに近い状態は1日の8〜9割ありますが、反応が鈍くなる深い状態は約2.4時間でした。",me:"Sleep-like states fill 80–90% of the day, but the deep, unresponsive state lasts only about 2.4 hours."},
+ {n:"ウシガエル",sci:"Lithobates catesbeianus",ne:"Bullfrog",e:"🐸",h:0,g:"amphibian",t:"living",r:"A",s:["CT"],m:"1960年代の研究で「眠らない」と結論された有名な例です（0時間）。休んでいても刺激への反応が鈍くならなかったためで、現在は見直しの余地があるとされます。",me:"A famous 1960s case concluded it never sleeps (0 h), because its responsiveness did not drop while resting. The finding is now considered open to revision."},
+ {n:"テンチ",sci:"Tinca tinca",ne:"Tench",e:"🐟",h:14.4,g:"fish",t:"living",r:"A",s:["CT"],m:"ヨーロッパのコイの仲間。昼は8割、夜は4割の時間を休んでいました。",me:"A European carp relative that rested 80% of the day and 40% of the night."},
+ {n:"メキシカンテトラ（川）",sci:"Astyanax mexicanus",ne:"Mexican tetra (river)",e:"🐠",h:13.3,g:"fish",t:"living",r:"A",s:["CAV"],m:"川にすむ目のあるタイプは、1日800分以上（約13時間）眠ります。",me:"The sighted river form sleeps over 800 minutes (about 13 hours) a day."},
+ {n:"ヨーロピアンパーチ",sci:"Perca fluviatilis",ne:"European perch",e:"🐟",h:7.5,g:"fish",t:"living",r:"A",s:["CT"],m:"季節によって5〜10時間で、休むのはすべて夜でした。表示値は中央の値です。",me:"5–10 hours depending on season, all at night. The midpoint is shown."},
+ {n:"メキシカンテトラ（洞窟）",sci:"Astyanax mexicanus",ne:"Mexican cavefish",e:"🐠",h:3,g:"fish",t:"living",r:"A",s:["CAV"],m:"同じ種でも、暗い洞窟に適応した目のないタイプは1日110〜250分しか眠りません。3つの洞窟で別々に短眠へ進化しました。",me:"The same species, adapted to dark caves and eyeless, sleeps only 110–250 minutes a day — an evolution that happened separately in three caves."},
+ {n:"ラッド",sci:"Scardinius erythrophthalmus",ne:"Rudd",e:"🐟",h:2,g:"fish",t:"living",r:"A",s:["CT"],m:"昼に活動し、夜に1〜3時間だけ短く休みます。冬は活動そのものが大きく減ります。",me:"Active by day, resting only 1–3 hours at night; in winter its activity drops sharply overall."},
+ {n:"モリフクロウ",sci:"Strix aluco",ne:"Tawny owl",e:"🦉",h:16,g:"bird",t:"living",r:"A",s:["CT"],m:"脳波の記録で1日約16時間眠っていました。ただし別の研究では約7時間とされ、睡眠の数え方で大きく変わる例です。ヨーロッパでは「ホーホー」と鳴くフクロウの代表です。",me:"EEG showed about 16 hours a day, though another study found about 7 — a case where how sleep is counted changes everything. The classic hooting owl of Europe."},
+ {n:"ヤマビーバー",sci:"Aplodontia rufa",ne:"Mountain beaver",e:"🐾",h:14.4,g:"mammal",t:"living",r:"A",s:["CT"],m:"名前に反してビーバーの仲間ではなく、現存するもっとも原始的なネズミの仲間の一つで「生きた化石」と呼ばれます。値はうとうとした状態も含みます。",me:"Despite the name it's no beaver, but one of the most primitive living rodents — a \"living fossil\". The figure includes drowsiness."},
+ {n:"アナホリフクロウ",sci:"Athene cunicularia",ne:"Burrowing owl",e:"🦉",h:14.3,g:"bird",t:"living",r:"A",s:["CT"],m:"その名のとおり地面の巣穴で暮らすフクロウです。巣穴のヒナは、ガラガラヘビの音に似た声を出して天敵を追い払うと言われます。",me:"Lives in burrows in the ground. Its chicks are said to make a rattlesnake-like hiss to scare off predators."},
+ {n:"マデイラゴキブリ",sci:"Rhyparobia maderae",ne:"Madeira cockroach",e:"🪳",h:14,g:"insect",t:"living",r:"A",s:["CT"],m:"休む時間を奪うと、あとで休息を取り戻すことが確かめられ、昆虫にも眠りに似た仕組みがある手がかりになりました。",me:"When deprived of rest it makes up for it later — an early clue that insects have something like sleep."},
+ {n:"ジュウサンセンジリス",sci:"Ictidomys tridecemlineatus",ne:"Thirteen-lined ground squirrel",e:"🐿️",h:13.9,g:"mammal",t:"living",r:"A",s:["CT"],m:"背中に13本のしま模様があるジリス。冬眠中は体温が数℃まで下がります。",me:"A ground squirrel with 13 stripes on its back; during hibernation its body temperature drops to just a few degrees."},
+ {n:"フクロギツネ",sci:"Trichosurus vulpecula",ne:"Common brushtail possum",e:"🐾",h:13.7,g:"mammal",t:"living",r:"A",s:["CT"],m:"オーストラリアの有袋類で、都市の屋根裏にもすみつきます。ニュージーランドでは持ち込まれて増えすぎ、問題になっています。",me:"An Australian marsupial that even lives in city attics; introduced to New Zealand, it has become a serious pest."},
+ {n:"ミズトガリネズミ",sci:"Neomys fodiens",ne:"Eurasian water shrew",e:"🐭",h:13.6,g:"mammal",t:"living",r:"A",s:["CT"],m:"水に潜って狩りをするトガリネズミで、唾液に毒を持っています。",me:"A shrew that dives to hunt, with venomous saliva."},
+ {n:"ホッキョクオオカミ",sci:"Canis lupus arctos",ne:"Arctic wolf",e:"🐺",h:13,g:"mammal",t:"living",r:"A",s:["CT"],m:"夏の白夜の中、心拍の記録から推定した値です（1頭）。冬は数か月続く極夜の中で暮らします。",me:"Estimated from heart-rate records of one wolf under the midnight sun. In winter it lives through months of polar night."},
+ {n:"ジャコウネズミ",sci:"Suncus murinus",ne:"Asian house shrew",e:"🐭",h:12.8,g:"mammal",t:"living",r:"A",s:["CT"],m:"沖縄などにもすむトガリネズミの仲間。子どもが前の子の尾をくわえ、一列につながって移動する「キャラバン行動」で知られます。",me:"A shrew found as far as Okinawa, known for \"caravanning\": babies bite the tail in front and move in a single line."},
+ {n:"ハナナガネズミカンガルー",sci:"Potorous tridactylus",ne:"Long-nosed potoroo",e:"🦘",h:11.6,g:"mammal",t:"living",r:"A",s:["CT"],m:"ウサギほどの大きさの小型のカンガルーの仲間で、地中のキノコを掘って食べます。",me:"A rabbit-sized relative of kangaroos that digs up underground fungi to eat."},
+ {n:"コウテイペンギン",sci:"Aptenodytes forsteri",ne:"Emperor penguin",e:"🐧",h:10.7,g:"bird",t:"living",r:"A",s:["CT"],m:"南極の自然の中で脳波を記録した値で、1回の眠りは約5分。冬の南極で、オスが2か月以上絶食しながら卵を温めます。",me:"Recorded in the wild in Antarctica, with sleep bouts of about 5 minutes. Males fast for over two months while incubating the egg through the winter."},
+ {n:"ドバト",sci:"Columba livia",ne:"Rock pigeon",e:"🐦",h:10.6,g:"bird",t:"living",r:"A",s:["CT"],m:"複数の研究で約10.6〜10.8時間とほぼ一致しています。遠く離れても巣に戻れる帰巣能力で、伝書鳩として使われてきました。",me:"Several studies agree on about 10.6–10.8 hours. Its homing ability made it the classic carrier pigeon."},
+ {n:"ヨーロッパモグラ",sci:"Talpa europaea",ne:"European mole",e:"🐾",h:10.5,g:"mammal",t:"living",r:"A",s:["CT"],m:"ミミズの頭をかんで動けなくし、生きたまま地下に貯蔵することがあります。",me:"It sometimes bites earthworms' heads to paralyse them and stores them alive underground."},
+ {n:"ブラントハリネズミ",sci:"Paraechinus hypomelas",ne:"Brandt's hedgehog",e:"🦔",h:10.3,g:"mammal",t:"living",r:"A",s:["CT"],m:"中東から中央アジアの乾燥地にすむ、耳の大きいハリネズミです。",me:"A big-eared hedgehog of dry lands from the Middle East to Central Asia."},
+ {n:"ジュズカケバト",sci:"Streptopelia risoria",ne:"Ringed turtle dove",e:"🕊️",h:10.2,g:"bird",t:"living",r:"A",s:["CT"],m:"夜の暗い時間だけで約10時間眠ります。首の後ろの黒い輪が数珠のように見えることが名前の由来です。",me:"Sleeps about 10 hours, all in the dark. Named in Japanese for the black collar that looks like prayer beads."},
+ {n:"コガタペンギン",sci:"Eudyptula minor",ne:"Little penguin",e:"🐧",h:8.3,g:"bird",t:"living",r:"A",s:["CT"],m:"体長40cmほどの世界最小のペンギンです。",me:"The world's smallest penguin, about 40 cm tall."},
+ {n:"シロフクロウ",sci:"Bubo scandiacus",ne:"Snowy owl",e:"🦉",h:7.9,g:"bird",t:"living",r:"A",s:["CT"],m:"北極圏にすむ白いフクロウで、白夜の季節には昼間も狩りをします。",me:"A white Arctic owl that also hunts by day during the midnight-sun season."},
+ {n:"インダスカワイルカ",sci:"Platanista minor",ne:"Indus river dolphin",e:"🐬",h:7,g:"mammal",t:"living",r:"A",s:["CT"],k:"micro",m:"濁った川にすむほぼ目の見えないイルカ。流れの中で泳ぎ続けるため、数秒の眠りを積み重ねて1日約7時間眠ると報告されています。",me:"A nearly blind dolphin of muddy rivers. It never stops swimming against the current, reportedly sleeping in seconds-long bursts that add up to about 7 hours."},
+ {n:"ガチョウ",sci:"Anser anser domesticus",ne:"Domestic goose",e:"🪿",h:6.2,g:"bird",t:"living",r:"A",s:["CT"],m:"ハイイロガンを家畜化した鳥です。睡眠とは別に、うとうとした状態が約8時間ありました。",me:"A domesticated greylag goose; besides sleep, it spent another ~8 hours drowsing."},
+ {n:"アカオノスリ",sci:"Buteo jamaicensis",ne:"Red-tailed hawk",e:"🦅",h:4.5,g:"bird",t:"living",r:"A",s:["CT"],m:"眠りは1回3〜40分で、夜のあいだに何度も目を覚まします。映画でワシの声として使われる鋭い鳴き声は、実はこの鳥のものが多いと言われます。",me:"Sleeps 3–40 minutes at a time, waking often. The fierce scream used for eagles in films is often actually this hawk's."},
+ {n:"ワライハヤブサ",sci:"Herpetotheres cachinnans",ne:"Laughing falcon",e:"🦅",h:4.5,g:"bird",t:"living",r:"A",s:["CT"],m:"笑い声のような鳴き声が名前の由来。ヘビを主な獲物にする珍しいハヤブサです。",me:"Named for its laugh-like call; an unusual falcon that mainly hunts snakes."},
+ {n:"イシイルカ",sci:"Phocoenoides dalli",ne:"Dall's porpoise",e:"🐬",h:0,g:"mammal",t:"living",r:"A",s:["CT"],m:"飼育下の観察で、眠るような行動がまったく見られなかったと報告されています（0時間）。脳の半分ずつ眠っている可能性もあり、見直しの余地があります。小型のイルカでは最速クラスです。",me:"Captive observations reported no sleep-like behaviour at all (0 h); it may sleep one hemisphere at a time, so the finding is open to revision. One of the fastest small cetaceans."},
+ {n:"スミロドン",sci:"Smilodon",ne:"Smilodon",e:"🐅",h:14,g:"mammal",t:"extinct",r:"C",s:["EST","UW"],m:"約1万年前に絶滅したサーベルタイガー。大型ネコ科（トラ15.8h・ライオン13.5h）から推定。",me:"Saber-toothed cat, extinct about 10,000 years ago. Estimated from big cats (tiger 15.8 h, lion 13.5 h)."},
+ {n:"メイ・ロン",sci:"Mei long",ne:"Mei long",e:"🦖",h:11,g:"reptile",t:"extinct",r:"C",s:["MEI","EST"],m:"中国で見つかった小型恐竜。鳥のように首を翼の下にしまって眠る姿で化石になり、学名は「ぐっすり眠る竜」の意味。時間は鳥類から置いた大まかな推定です。恐竜は、ここでは爬虫類に分類しています。",me:"A small dinosaur from China, fossilized in a bird-like sleeping pose; its name means \"soundly sleeping dragon\". The hours are a rough estimate from birds. Dinosaurs are grouped with reptiles here."},
+ {n:"ドードー",sci:"Raphus cucullatus",ne:"Dodo",e:"🦤",h:10,g:"bird",t:"extinct",r:"C",s:["EST"],m:"1600年代に絶滅。近縁のハト類から置いた推定で、根拠は弱めです。",me:"Extinct in the 1600s. A weak estimate based on its pigeon relatives."},
+ {n:"ネアンデルタール人",sci:"Homo neanderthalensis",ne:"Neanderthal",e:"🗿",h:7.5,g:"mammal",t:"extinct",r:"C",s:["EST"],m:"約4万年前に絶滅。現生人類と同程度と仮定した推定です。",me:"Extinct about 40,000 years ago. Assumed similar to modern humans."},
+ {n:"ケナガマンモス",sci:"Mammuthus primigenius",ne:"Woolly mammoth",e:"🦣",h:3,g:"mammal",t:"extinct",r:"C",s:["EST","ELE"],m:"約4000年前まで生存。近縁のゾウ類（野生2.1h〜飼育下3.9h）から推定。",me:"Survived until about 4,000 years ago. Estimated from elephants (2.1 h wild to 3.9 h captive)."}
+];
+
+const T={
+ja:{title:"ねむりの図鑑",lead:"あなたの睡眠時間を入れると、いまを生きる動物や、もういない生き物たちと並べて比べます。",
+ modeHours:"時間で入力",modeClock:"時刻で入力",sliderLabel:"1日の睡眠時間（昼寝を含む）",min:"分",
+ bed:"寝た時刻",wake:"起きた時刻",clockHint:"日付をまたいでも自動で計算します。",
+ kinTitle:"あなたの眠りは、この生き物たちに近い",same:"ほぼ同じ",longer:"あなたより{d}長い",shorter:"あなたより{d}短い",
+ tally:"あなたより長く眠る <strong>{a}</strong> 種　短く眠る <strong>{b}</strong> 種",
+ share:"テキストでシェア",cardBtn:"🖼 結果カードを保存",cardSaved:"保存しました。",cardHold:"画像を長押し（右クリック）して保存できます。",cardDeclined:"保存をキャンセルしました。",cardType:"{n}型",cardYou:"あなた {a}　／　{n} {b}",todayTitle:"今日の一匹",todayMore:"くわしく見る",todayNote:"毎日0時に入れ替わります。",rarity:"レア度",rarRule:"レア度の基準：★★★＝絶滅種・0時間・1時間未満・19時間以上・脳の半分ずつ／細切れに眠る生き物、★★＝哺乳類以外・立ち寝・16時間以上・3時間以下、★＝それ以外。",copied:"コピーしました。貼り付けて共有できます。",copyFail:"下の文章を長押し（選択）してコピーしてください。",
+ shareText:"私の睡眠時間は{h}。いちばん近い生き物は{e}{n}（{nh}）でした。 #ねむりの図鑑",
+ listTitle:"ねむりの長さ比べ",fAll:"すべて",fLiving:"いまの生き物",fExtinct:"絶滅した生き物（推定）",
+ styleLabel:"眠り方",groupLabel:"なかま",gAll:"🌏 すべて",gMammal:"🐾 哺乳類",gBird:"🐦 鳥類",gReptile:"🦎 爬虫類",gAmphibian:"🐸 両生類",gFish:"🐟 魚類",gInsect:"🐜 昆虫",gExtinct:"🦴 絶滅（推定）",tabHome:"くらべる",tabQuiz:"クイズ",tabList:"いちらん",tabZukan:"図鑑",listLead:"上のボタンで、なかまごとに切り替えられます。行をタップすると豆知識が開きます。",nowShow:"表示中",nowCount:"{n}種",backAll:"すべてに戻す",notesTitle:"出典・注意事項・プライバシー",cardTitle:"結果カード",cardLead:"カードにする生き物を、あなたに近い3種から選べます。",cardSel:"選択中",cardNowTxt:"「あなたの眠りは <strong>{e} {n}型</strong>」のカードを作ります。",cardSave:"🖼 {n}型のカードを保存",sAll:"すべて",sHalf:"脳の半分ずつ眠る",sStand:"立ったまま眠れる",sMicro:"細切れに眠る",
+ dHalf:"左右の脳を片方ずつ眠らせ、もう片方は起きたまま。泳ぎ続けたり、飛び続けたり、片目で天敵を見張ったりできます。",
+ dStand:"脚の関節を固定する仕組みで、立ったままうとうとできます。ただし深い眠りには横になる必要がある種が多いです。",
+ dMicro:"数秒の居眠りを何千回もくり返し、合計で睡眠時間をかせぎます。",
+ kHalf:"半球睡眠",kStand:"立ち寝",kMicro:"細切れ睡眠",
+ you:"あなた",details:"くわしく",rel:"信頼度",src:"出典",RA:"学術文献",RB:"一般解説",RC:"推定",extinctTag:"絶滅・推定値",
+ quizTitle:"どっちが長く眠る？",quizLead:"長く眠ると思うほうをタップしてください。答えると豆知識と、図鑑への登録がついてきます。",qNext:"次の問題",qRight:"正解！",qWrong:"ざんねん。",qDiff:"{w}のほうが{d}長く眠ります。",qScore:"正解 <strong>{a}</strong> / {b}",qStreak:"連続正解 <strong>{c}</strong>",qBest:"最高記録 <strong>{d}</strong>",qMore:"{n}の豆知識を見る",
+ collTitle:"ねむり図鑑コレクション",collLead:"生き物の詳細を開いたり、クイズに出てきたりすると図鑑に登録されます。全種の発見をめざしてみてください。",collCount:"発見 <strong>{a}</strong> / {b} 種（{p}%）",rand:"🎲 ランダムに出会う",unknown:"？？？",complete:"🎉 全種コンプリート！おつかれさまでした。",
+ trivia:"豆知識・ねむりメモ",perDay:"1日の睡眠時間",vsYou:"あなたとくらべると",annual:"この生き物と同じだけ眠ると、起きている時間が1年で約{y}{dir}。",more:"増えます",less:"減ります",annualSame:"あなたとほぼ同じ眠りです。1年たっても差はほとんどありません。",
+ formula:"計算式：（{a} − {b}）× 365日 ＝ {c}時間",rank:"全{n}種中、長く眠る順で{r}位",close:"閉じる",prev:"← 短く眠る生き物",next:"長く眠る生き物 →",groupName:"なかま",newFound:"🆕 図鑑に登録しました",photoLbl:"写真・会える場所",humanNote:"ヒトにはいつでも会えます。たとえば鏡の前で。",newTab:"新しいタブで開きます",googleName:"Google検索",linkSafe:"リンク先は、非営利団体ウィキメディア財団が運営するWikipedia・Wikimedia Commonsと、Google検索だけです。どれも新しいタブで開き、送られるのは生き物の名前（または学名）だけです。",photo:"写真を見る",wiki:"Wikipediaで調べる",zoo:"会える動物園・水族館を探す",museum:"化石・標本の展示を探す",zooNote:"飼育している施設は変わるため、訪問前に各施設の公式サイトで確認してください。",museumNote:"写真には、化石や復元図が表示されます。",openHint:"タップで豆知識",
+ wd:["日","月","火","水","木","金","土"],pct:"1日の{p}%",chartLabel:"直近7日間の睡眠時間",
+ refsTitle:"主な出典",privacy:"🔒 入力した睡眠時間、図鑑の発見記録、クイズの成績は、この端末のブラウザの中にだけ保存されます。外部には送信されず、アカウント登録もいりません。",disclaimer:"このアプリは医療・健康上の助言を目的としたものではありません。",
+ notes:["現存種の数値は、学術文献をまとめた代表値です。飼育下か野生か、季節、個体、測定方法によって大きく変わるため、目安としてご覧ください。各行の「くわしく」で出典と信頼度（学術文献／一般解説／推定）を確認できます。",
+  "昆虫の「睡眠」は、動かない時間・刺激への反応の鈍さ・姿勢などで判定したもので、哺乳類の脳波による測定とは方法が異なります。","絶滅した生き物の睡眠時間は誰も測れていません。表示している数値は、近縁の現存種から置いた<strong>本アプリ独自の参考推定</strong>で、学術的な測定値ではありません。",
+  "ヒトの成人では、7〜9時間程度の睡眠が推奨されています（Hirshkowitz, M. et al. (2015) Sleep Health 1: 40–43）。厚生労働省「健康づくりのための睡眠ガイド2023」では、成人は6時間以上が目安とされています。"]},
+en:{title:"The Sleep Almanac",lead:"Enter how long you sleep and see where you stand among living animals and creatures long gone.",
+ modeHours:"By hours",modeClock:"By clock",sliderLabel:"Sleep per day (naps included)",min:" min",
+ bed:"Bedtime",wake:"Wake time",clockHint:"Crossing midnight is handled automatically.",
+ kinTitle:"Creatures that sleep like you",same:"about the same",longer:"{d} longer than you",shorter:"{d} shorter than you",
+ tally:"<strong>{a}</strong> species sleep longer　<strong>{b}</strong> sleep less",
+ share:"Share as text",cardBtn:"🖼 Save result card",cardSaved:"Saved.",cardHold:"Press and hold (or right-click) the image to save it.",cardDeclined:"Save cancelled.",cardType:"{n} type",cardYou:"You {a}　/　{n} {b}",todayTitle:"Creature of the day",todayMore:"See details",todayNote:"Changes every day at midnight.",rarity:"Rarity",rarRule:"Rarity: ★★★ = extinct, 0 h, under 1 h, 19 h or more, half-brain or micro-nap sleepers; ★★ = non-mammals, standing sleepers, 16 h or more, 3 h or less; ★ = the rest.",copied:"Copied. Paste it anywhere to share.",copyFail:"Select the text below and copy it.",
+ shareText:"I sleep {h} a day. My closest match: {e} {n} ({nh}). #SleepAlmanac",
+ listTitle:"Who sleeps the longest",fAll:"All",fLiving:"Living",fExtinct:"Extinct (estimated)",
+ styleLabel:"Sleep style",groupLabel:"Group",gAll:"🌏 All",gMammal:"🐾 Mammals",gBird:"🐦 Birds",gReptile:"🦎 Reptiles",gAmphibian:"🐸 Amphibians",gFish:"🐟 Fish",gInsect:"🐜 Insects",gExtinct:"🦴 Extinct (est.)",tabHome:"Compare",tabQuiz:"Quiz",tabList:"List",tabZukan:"Almanac",listLead:"Switch groups with the buttons above. Tap a row for trivia.",nowShow:"Showing",nowCount:"{n} species",backAll:"Show all",notesTitle:"Sources, notes & privacy",cardTitle:"Result card",cardLead:"Pick which of your 3 closest creatures goes on the card.",cardSel:"Selected",cardNowTxt:"Your card will say: \"Your sleep is <strong>{e} {n} type</strong>\".",cardSave:"🖼 Save the {n} card",sAll:"All",sHalf:"Half-brain sleep",sStand:"Sleeps standing",sMicro:"Micro-naps",
+ dHalf:"One side of the brain sleeps while the other stays awake — enough to keep swimming, keep flying, or watch for predators with one eye.",
+ dStand:"Locking leg joints let them doze upright, though most still need to lie down for deep sleep.",
+ dMicro:"Thousands of naps lasting seconds add up to a full night's worth.",
+ kHalf:"half-brain",kStand:"standing",kMicro:"micro-naps",
+ you:"You",details:"Details",rel:"Reliability",src:"Source",RA:"scientific literature",RB:"general reference",RC:"estimate",extinctTag:"extinct · estimate",
+ quizTitle:"Who sleeps longer?",quizLead:"Tap the one you think sleeps longer. Each answer reveals trivia and adds both creatures to your almanac.",qNext:"Next question",qRight:"Correct!",qWrong:"Not quite.",qDiff:"The {w} sleeps {d} longer.",qScore:"Correct <strong>{a}</strong> / {b}",qStreak:"Streak <strong>{c}</strong>",qBest:"Best <strong>{d}</strong>",qMore:"Trivia: {n}",
+ collTitle:"Almanac collection",collLead:"Creatures join your almanac when you open their details or meet them in the quiz. Try to find them all.",collCount:"Found <strong>{a}</strong> / {b} ({p}%)",rand:"🎲 Meet a random creature",unknown:"???",complete:"🎉 Complete! You've found every creature.",
+ trivia:"Trivia & sleep notes",perDay:"Sleep per day",vsYou:"Compared with you",annual:"Sleeping like this creature, you'd have about {y} {dir} awake time per year.",more:"more",less:"less",annualSame:"Almost the same as you — barely any difference over a year.",
+ formula:"Formula: ({a} − {b}) × 365 days = {c} h",rank:"Rank {r} of {n} by sleep length",close:"Close",prev:"← Sleeps less",next:"Sleeps more →",groupName:"Group",newFound:"🆕 Added to your almanac",photoLbl:"Photos & where to see them",humanNote:"You can meet a human any time — try the nearest mirror.",newTab:"opens in a new tab",googleName:"Google Search",linkSafe:"Links go only to Wikipedia and Wikimedia Commons (run by the non-profit Wikimedia Foundation) and Google Search. Each opens in a new tab and sends only the creature's name (or scientific name).",photo:"See photos",wiki:"Look up on Wikipedia",zoo:"Find zoos & aquariums",museum:"Find fossil exhibits",zooNote:"Which zoos keep an animal changes, so check official sites before visiting.",museumNote:"Photos show fossils and reconstructions.",openHint:"tap for trivia",
+ wd:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],pct:"{p}% of the day",chartLabel:"Sleep over the last 7 days",
+ refsTitle:"Main sources",privacy:"🔒 Your sleep time, almanac progress and quiz scores are stored only in this browser. Nothing is sent anywhere, and no account is needed.",disclaimer:"This app is not medical or health advice.",
+ notes:["Figures for living species are typical values compiled from scientific literature. They vary with captivity, season, individual and method, so treat them as rough guides. Tap \"Details\" on any row to see its source and reliability.",
+  "Insect \"sleep\" is judged by stillness, reduced responsiveness and posture, not by brain waves as in mammals.","No one has measured how extinct creatures slept. Their figures are <strong>this app's own estimates</strong> from living relatives, not scientific measurements.",
+  "For adults, 7–9 hours of sleep is generally recommended (Hirshkowitz, M. et al. (2015) Sleep Health 1: 40–43)."]}
+};
+
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+             set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let L=store.get("sleepLang","ja"), H=store.get("sleepH",7), filter="all", style="all", group="all", mode="hours";
+const t=(k,o={})=>String(T[L][k]).replace(/\{(\w+)\}/g,(_,x)=>o[x]??"");
+const nm=a=>L==="ja"?a.n:a.ne;
+const snap=h=>Math.round(Math.max(0,Math.min(24,h))*12)/12;
+function fmt(h){const tot=Math.round(h*60),hh=Math.floor(tot/60),mm=tot%60;
+  if(hh===0&&mm)return L==="ja"?`${mm}分`:`${mm} min`;
+  return L==="ja"?(mm?`${hh}時間${mm}分`:`${hh}時間`):(mm?`${hh} h ${mm} min`:`${hh} h`)}
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const nearest=h=>[...D].sort((a,b)=>Math.abs(a.h-h)-Math.abs(b.h-h));
+
+function verdict(h){
+  if(h<0.25) return L==="ja"?"ウシガエルやアカウミガメは、かつて「眠らない」と報告されました。人間はそうはいかないので、どうか眠ってください。":"Bullfrogs and loggerhead turtles were once reported never to sleep. Humans are not so lucky — please get some rest.";
+ const ja=[[1,"グンカンドリが海の上で飛びながら取る眠りに近い長さです。人間は着陸できるので、どうか着陸してください。"],
+  [3,"野生のゾウやマッコウクジラと同じ、見張りを続ける側の眠りです。ただ、人間の体はサバンナ仕様ではありません。"],
+  [5,"ウシや働きアリの領域。休みなく働く側の眠りで、人間の脳にはやや物足りない長さです。"],
+  [6.5,"ヒツジやミツバチと同じくらい。生き物としては珍しくありませんが、ヒトとしては少し短めです。"],
+  [8.5,"ヒトらしい、ちょうどよい眠り。ブタやネアンデルタール人と並んでいます。"],
+  [11,"チンパンジーやイヌと同じくらい。木の上にベッドを作っても違和感はありません。"],
+  [14,"ネコやライオンの領域。狩りのない日の肉食獣くらい、ゆったり眠っています。"],
+  [18,"トラやカモノハシと肩を並べる長さ。夜の森の住人です。"],
+  [99,"コアラやコウモリと同じ、眠りが本業の生き物たちの仲間です。"]];
+ const en=[[1,"That's frigatebird territory — sleep snatched mid-flight over the ocean. You, at least, are allowed to land."],
+  [3,"You sleep like a wild elephant or a sperm whale, always on watch. The human body, however, was not built for the savanna."],
+  [5,"Cow and worker-ant range — the sleep of those who never stop working, a little thin for a human brain."],
+  [6.5,"About as much as a sheep or a honeybee — ordinary for an animal, a bit short for a human."],
+  [8.5,"A properly human amount, right alongside pigs and Neanderthals."],
+  [11,"Chimpanzee and dog levels. Building a nest in the trees would not look out of place."],
+  [14,"Cat and lion territory — the sleep of a predator on a day off."],
+  [18,"Up there with tigers and platypuses. A resident of the night forest."],
+  [99,"You belong with koalas and bats, creatures for whom sleep is the main job."]];
+ return (L==="ja"?ja:en).find(([lim])=>h<lim)[1];
+}
+
+function applyLang(){
+ document.documentElement.lang=L;
+ document.title=L==="ja"?"ねむりの図鑑｜あなたの睡眠と生き物くらべ":"The Sleep Almanac — compare your sleep with animals";
+ $$("[data-i]").forEach(el=>el.textContent=t(el.dataset.i));
+ $("#lang").textContent=L==="ja"?"EN":"日本語";
+ $("#notes").innerHTML=T[L].notes.map(p=>`<p>${p}</p>`).join("");
+ $("#refs").innerHTML=Object.entries(SRC).filter(([k])=>k!=="EST"&&k!=="GEN").map(([,v])=>`<li>${v[L]}</li>`).join("");
+}
+
+function render(){
+ const h=H;
+ const tot=Math.round(h*60),hh=Math.floor(tot/60),mm=tot%60;
+ $("#hv").innerHTML=L==="ja"?`${hh}<small>時間</small>${mm?`${mm}<small>分</small>`:""}`:`${hh}<small>h</small>${mm?`${mm}<small>min</small>`:""}`;
+ const c=2*Math.PI*72;
+ $("#arc").setAttribute("stroke-dasharray",`${c*h/24} ${c}`);
+ $("#arc").style.opacity=h?1:0;
+ $("#pct").textContent=t("pct",{p:Math.round(h/24*100)});
+ $("#h").value=h;
+ $("#verdict").textContent=verdict(h);
+
+ $("#kin").innerHTML=nearest(h).slice(0,3).map(a=>{
+  const d=a.h-h, diff=Math.abs(d)<0.05?t("same"):t(d>0?"longer":"shorter",{d:fmt(Math.abs(d))});
+  return `<button data-n="${D.indexOf(a)}"><div class="e" aria-hidden="true">${a.e}</div><b>${nm(a)}${a.t==="extinct"?(L==="ja"?"（推定）":" (est.)"):""}</b><span>${fmt(a.h)}・${diff}</span></button>`;
+ }).join("");
+ $("#tally").innerHTML=t("tally",{a:D.filter(a=>a.h>h).length,b:D.filter(a=>a.h<h).length});
+
+ const items=D.filter(a=>(group==="all"||(group==="extinct"?a.t==="extinct":a.g===group)))
+   .concat([{n:"あなた",ne:"You",e:"⭐",h,t:"you"}]).sort((a,b)=>b.h-a.h);
+ const RL={A:t("RA"),B:t("RB"),C:t("RC")}, KL={half:t("kHalf"),stand:t("kStand"),micro:t("kMicro")};
+ const gKey={all:"gAll",mammal:"gMammal",bird:"gBird",reptile:"gReptile",amphibian:"gAmphibian",fish:"gFish",insect:"gInsect",extinct:"gExtinct"}[group];
+ $("#listStatus").innerHTML=`<span>${t("nowShow")}</span><strong>${t(gKey)}</strong><span>${t("nowCount",{n:items.length-1})}</span>${group==="all"?"":`<button id="backAll">${t("backAll")}</button>`}`;
+ $("#list").innerHTML=items.map(a=>{
+  const cls=a.t==="you"?"row you":a.t==="extinct"?"row ex":"row";
+  const tag=(a.t==="you"?"":`<span class="st r${rar(a)}">${stars(rar(a))}</span>`)+(a.t==="extinct"?`<em>${t("extinctTag")}</em>`:"")+(a.k?`<i>${KL[a.k]}</i>`:"");
+  const note="", idx=a.t==="you"?"":` data-n="${D.indexOf(a)}" tabindex="0" role="button"`;
+  const more=a.t==="you"?"":`<span class="more">📖 ${t("openHint")}${seen.has(a.n)?"":" ・🆕"}</span>`;
+  return `<li class="${cls}"${idx}><div class="nm"><span aria-hidden="true">${a.e}</span> ${nm(a)}${tag}${more}</div>
+   <div class="track"><div class="bar" style="width:${a.h/24*100}%"></div></div>
+   <div class="hrs">${(Math.round(a.h*10)/10).toFixed(1)}h</div>${note}</li>`;
+ }).join("");
+ renderColl(); renderToday(); if(typeof renderCardPanel==="function")renderCardPanel();
+}
+
+function setH(v){H=snap(v);store.set("sleepH",H);render()}
+function fromClock(){
+ const [bh,bm]=$("#bed").value.split(":").map(Number),[wh,wm]=$("#wake").value.split(":").map(Number);
+ if([bh,bm,wh,wm].some(isNaN))return;
+ setH(((wh*60+wm)-(bh*60+bm)+1440)%1440/60);
+}
+
+$("#h").addEventListener("input",e=>{H=snap(+e.target.value);render()});
+$("#h").addEventListener("change",()=>store.set("sleepH",H));
+$$("[data-d]").forEach(b=>b.addEventListener("click",()=>setH(H+ +b.dataset.d)));
+$$("[data-mode]").forEach(b=>b.addEventListener("click",()=>{
+ mode=b.dataset.mode;$$("[data-mode]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+ $("#pHours").hidden=mode!=="hours";$("#pClock").hidden=mode!=="clock";
+ if(mode==="clock")fromClock();
+}));
+["bed","wake"].forEach(id=>$("#"+id).addEventListener("input",fromClock));
+$$("[data-g]").forEach(b=>b.addEventListener("click",()=>{group=b.dataset.g;$$("[data-g]").forEach(x=>x.setAttribute("aria-pressed",x===b));b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});render()}));
+$("#lang").addEventListener("click",()=>{L=L==="ja"?"en":"ja";store.set("sleepLang",L);applyLang();render();if(qPair){drawQuiz();quizMsg()}$("#shareMsg").textContent="";$("#shareBox").hidden=true});
+
+$("#share").addEventListener("click",async()=>{
+ const k=cardAnimal().k;
+ const text=t("shareText",{h:fmt(H),e:k.e,n:nm(k),nh:fmt(k.h)})+"\n"+PUBLIC_URL;
+ const msg=$("#shareMsg"),box=$("#shareBox"); box.hidden=true;
+ try{ if(navigator.share){await navigator.share({text});return} }catch(e){ if(e&&e.name==="AbortError")return }
+ try{ await navigator.clipboard.writeText(text); msg.textContent=t("copied"); return }catch(e){}
+ box.value=text; box.hidden=false; box.focus(); box.select(); msg.textContent=t("copyFail");
+});
+
+
+/* ---- 図鑑・豆知識・クイズ ---- */
+let seen=new Set(store.get("sleepSeen",[]));
+let Q=store.get("sleepQuiz",{a:0,b:0,c:0,d:0}), qPair=null, qDone=false, cur=-1, qLast=null;
+const GL=()=>({mammal:t("gMammal"),bird:t("gBird"),reptile:t("gReptile"),amphibian:t("gAmphibian"),fish:t("gFish"),insect:t("gInsect")});
+function markSeen(list){let added=false;list.forEach(a=>{if(!seen.has(a.n)){seen.add(a.n);added=true}});if(added){store.set("sleepSeen",[...seen])}return added}
+function rar(a){
+ if(a.t==="extinct"||a.h===0||a.h<1||a.h>=19||a.k==="half"||a.k==="micro") return 3;
+ if(a.g!=="mammal"||a.k==="stand"||a.h>=16||a.h<=3) return 2;
+ return 1;
+}
+const stars=n=>"★".repeat(n)+"☆".repeat(3-n);
+const byLen=()=>[...D].sort((a,b)=>b.h-a.h);
+
+const base=x=>x.replace(/（.*?）|\s*\(.*?\)/g,"").trim();
+const enc=encodeURIComponent;
+function lnk(url,icon,label,site){const host=new URL(url).hostname;
+ return `<a class="lnk" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${label}（${site}・${t("newTab")}）"><span>${icon} ${label} <span aria-hidden="true">↗</span></span><small>${site} ・ ${host}</small></a>`}
+function photoURL(a){return `https://commons.wikimedia.org/w/index.php?search=${enc(a.sci)}&title=Special:MediaSearch&type=image`}
+function wikiURL(a){return L==="ja"?`https://ja.wikipedia.org/w/index.php?search=${enc(base(a.n))}`:`https://en.wikipedia.org/w/index.php?search=${enc(a.sci.split(" ").length>1?a.sci:base(a.ne))}`}
+function zooURL(a){const q=a.t==="extinct"?(L==="ja"?`${base(a.n)} 化石 標本 展示 博物館`:`${base(a.ne)} fossil museum exhibit`):(L==="ja"?`${base(a.n)} 会える 動物園 水族館`:`${base(a.ne)} zoo aquarium`);return `https://www.google.com/search?q=${enc(q)}`}
+function openDetail(i){
+ const a=D[i]; if(!a)return; cur=i;
+ const isNew=markSeen([a]);
+ const RL={A:t("RA"),B:t("RB"),C:t("RC")}, KL={half:t("kHalf"),stand:t("kStand"),micro:t("kMicro")};
+ const sorted=byLen(), r=sorted.indexOf(a)+1;
+ const d=a.h-H, yr=Math.round(Math.abs(d)*365);
+ const body=(L==="ja"?a.m:a.me)||"";
+ const cmp=Math.abs(d)<0.05?t("annualSame"):
+   `${t(d>0?"longer":"shorter",{d:fmt(Math.abs(d))})}${L==="ja"?"。":"."}<br>${t("annual",{y:L==="ja"?`${yr}時間（${Math.round(yr/24)}日分）`:`${yr} h (${Math.round(yr/24)} days)`,dir:t(d>0?"less":"more")})}<small>${t("formula",{a:+Math.max(a.h,H).toFixed(2),b:+Math.min(a.h,H).toFixed(2),c:Math.round(Math.abs(d)*365)})}</small>`;
+ $("#dlgBody").innerHTML=`
+  <div class="head"><div class="big-e" aria-hidden="true">${a.e}</div><div>
+   <h3 id="dlgTitle">${nm(a)}</h3><div class="sub">${L==="ja"?a.ne:a.n}　<i>${a.sci}</i></div>
+   <div class="chips"><span class="chip st r${rar(a)}">${t("rarity")} ${stars(rar(a))}</span><span class="chip">${GL()[a.g]}</span>${a.t==="extinct"?`<span class="chip ex">${t("extinctTag")}</span>`:""}${a.k?`<span class="chip">${KL[a.k]}</span>`:""}</div></div></div>
+  ${isNew?`<p class="hint" style="margin-top:10px">${t("newFound")}</p>`:""}
+  <div class="lbl">${t("perDay")}</div><div class="hbig" style="margin-top:0">${fmt(a.h)}</div>
+  <div class="sub">${t("rank",{n:D.length,r})}</div>
+  <div class="lbl">${t("trivia")}</div><p>${body}</p>
+  ${a.k?`<div class="lbl">${t("styleLabel")}：${KL[a.k]}</div><p class="sub">${t({half:"dHalf",stand:"dStand",micro:"dMicro"}[a.k])}</p>`:""}
+  <div class="lbl">${t("vsYou")}</div><div class="cmp">${cmp}</div>
+  <div class="lbl">${t("photoLbl")}</div>
+  <div class="links">
+   ${lnk(photoURL(a),"📷",t("photo"),"Wikimedia Commons")}
+   ${lnk(wikiURL(a),"📚",t("wiki"),"Wikipedia")}
+   ${a.sci==="Homo sapiens"?"":lnk(zooURL(a),a.t==="extinct"?"🦴":"🏞️",t(a.t==="extinct"?"museum":"zoo"),t("googleName"))}
+  </div>
+  <p class="src" style="margin-top:8px">${a.sci==="Homo sapiens"?t("humanNote")+"<br>":""}🔒 ${t("linkSafe")}${a.sci==="Homo sapiens"?"":"<br>"+t(a.t==="extinct"?"museumNote":"zooNote")}</p>
+  <div class="lbl">${t("rel")}：${RL[a.r]}</div><div class="src">${t("src")}：${a.s.map(k=>SRC[k][L]).join(" ／ ")}</div>
+  <div class="dnav">
+   <button data-step="1" ${r===sorted.length?"disabled":""}>${t("prev")}</button>
+   <button data-step="-1" ${r===1?"disabled":""}>${t("next")}</button>
+  </div>
+  <div class="dnav"><button class="primary" id="dlgClose" style="margin-left:auto">${t("close")}</button></div>`;
+ const dlg=$("#dlg");
+ if(!dlg.open){ if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open","") }
+ $("#dlgBody").scrollTop=0;
+ render();
+}
+$("#dlg").addEventListener("click",e=>{
+ if(e.target.id==="dlg"||e.target.id==="dlgClose"){ $("#dlg").close?$("#dlg").close():$("#dlg").removeAttribute("open"); return }
+ const st=e.target.dataset.step; if(st){const s2=byLen(); const r=s2.indexOf(D[cur])+ +st; if(s2[r])openDetail(D.indexOf(s2[r]))}
+});
+function onPick(e){const el=e.target.closest("[data-n]"); if(el&&el.dataset.n!=="")openDetail(+el.dataset.n)}
+["#list","#kin","#grid"].forEach(id=>$(id).addEventListener("click",onPick));
+$("#list").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset.n){e.preventDefault();openDetail(+e.target.dataset.n)}});
+
+function renderColl(){
+ const n=D.length, a=D.filter(x=>seen.has(x.n)).length, p=Math.round(a/n*100);
+ $("#progbar").style.width=p+"%";
+ $("#collCount").innerHTML=a===n?t("complete"):t("collCount",{a,b:n,p});
+ $("#grid").innerHTML=byLen().map(x=>seen.has(x.n)
+  ?`<button class="tile r${rar(x)}" data-n="${D.indexOf(x)}"><span class="e" aria-hidden="true">${x.e}</span>${nm(x)}<span class="ts">${stars(rar(x))}</span></button>`
+  :`<div class="tile no" aria-label="${t("unknown")}"><span class="e" aria-hidden="true">${x.e}</span>${t("unknown")}<span class="ts">${stars(rar(x))}</span></div>`).join("");
+ $("#rarCount").innerHTML=[3,2,1].map(r=>{const all=D.filter(x=>rar(x)===r);return `<span class="st r${r}">${stars(r)}</span> <strong>${all.filter(x=>seen.has(x.n)).length}</strong> / ${all.length}`}).join("　");
+}
+$("#rand").addEventListener("click",()=>{
+ const pool=D.filter(x=>!seen.has(x.n)); const list=pool.length?pool:D;
+ openDetail(D.indexOf(list[Math.floor(Math.random()*list.length)]));
+});
+
+function newQuiz(){
+ let a,b,guard=0;
+ do{a=D[Math.floor(Math.random()*D.length)];b=D[Math.floor(Math.random()*D.length)];guard++}
+ while((a===b||Math.abs(a.h-b.h)<0.5)&&guard<200);
+ qPair=[a,b]; qDone=false; drawQuiz(); $("#qres").textContent=""; $("#qmore").hidden=true;
+}
+function drawQuiz(){
+ [0,1].forEach(i=>{const a=qPair[i],el=$("#q"+i);
+  el.className="qbtn"+(qDone?(a.h>=qPair[1-i].h?" win":" lose"):"");
+  el.innerHTML=`<span class="e" aria-hidden="true">${a.e}</span><b>${nm(a)}${a.t==="extinct"?(L==="ja"?"（推定）":" (est.)"):""}</b><span class="qh">${qDone?fmt(a.h):"?"}</span>`;
+ });
+ $("#qstat").innerHTML=`<span>${t("qScore",{a:Q.a,b:Q.b})}</span><span>${t("qStreak",{c:Q.c})}</span><span>${t("qBest",{d:Q.d})}</span>`;
+}
+[0,1].forEach(i=>$("#q"+i).addEventListener("click",()=>{
+ if(qDone)return; qDone=true;
+ const pick=qPair[i], other=qPair[1-i], ok=pick.h>other.h;
+ Q.b++; if(ok){Q.a++;Q.c++;Q.d=Math.max(Q.d,Q.c)}else Q.c=0; store.set("sleepQuiz",Q);
+ const w=pick.h>other.h?pick:other; qLast={ok,w,d:Math.abs(pick.h-other.h)};
+ quizMsg();
+ markSeen(qPair); drawQuiz(); renderColl();
+}));
+function quizMsg(){ if(!qDone||!qLast){$("#qres").textContent="";$("#qmore").hidden=true;return}
+ $("#qres").textContent=`${t(qLast.ok?"qRight":"qWrong")} ${t("qDiff",{w:nm(qLast.w),d:fmt(qLast.d)})}`;
+ $("#qmore").hidden=false; $("#qmore").textContent=t("qMore",{n:nm(qLast.w)}); $("#qmore").dataset.n=D.indexOf(qLast.w);
+}
+$("#qnext").addEventListener("click",newQuiz);
+$("#qmore").addEventListener("click",e=>openDetail(+e.currentTarget.dataset.n));
+
+/* ---- 今日の一匹 ---- */
+function todayIdx(){const d=iso(new Date());let x=0;for(const c of d)x=(x*31+c.charCodeAt(0))>>>0;return x%D.length}
+function renderToday(){
+ const a=D[todayIdx()], body=(L==="ja"?a.m:a.me)||"";
+ const short=body.length>70?body.slice(0,body.search(/[。.]/)+1||70):body;
+ $("#today").innerHTML=`<div class="e" aria-hidden="true">${a.e}</div><div>
+  <span class="st r${rar(a)}">${stars(rar(a))}</span><b>${nm(a)}</b><span class="sub">${fmt(a.h)}</span>
+  <p>${short}</p><button class="primary" data-n="${D.indexOf(a)}">${t("todayMore")}</button>
+  <div class="hint">${t("todayNote")}</div></div>`;
+}
+$("#today").addEventListener("click",onPick);
+
+/* ---- 結果カード ---- */
+let dl=null; (async()=>{try{if(window.claude&&claude.use)dl=await claude.use("downloads")}catch(e){dl=null}})();
+async function makeCard(k){
+ try{await document.fonts.ready}catch(e){}
+ const W=1080,Hh=1350,c=document.createElement("canvas");c.width=W;c.height=Hh;const x=c.getContext("2d");
+ const g=x.createLinearGradient(0,0,0,Hh);g.addColorStop(0,"#1E1D38");g.addColorStop(1,"#3A3C78");x.fillStyle=g;x.fillRect(0,0,W,Hh);
+ for(let i=0;i<70;i++){x.fillStyle=`rgba(255,255,255,${(Math.sin(i*12.9898)*43758.5453%1+1)%1*0.5+0.15})`;const sx=((Math.sin(i*78.233)*12345.678)%1+1)%1*W,sy=((Math.sin(i*39.425)*54321.123)%1+1)%1*Hh*0.55;x.beginPath();x.arc(sx,sy,2+(i%3),0,7);x.fill()}
+ const RF='"Zen Maru Gothic","Hiragino Maru Gothic ProN",system-ui,sans-serif';
+ x.textAlign="center";x.fillStyle="#E2B93B";x.font=`700 44px ${RF}`;x.fillText(t("title"),W/2,130);
+ x.fillStyle="#ECEAF7";x.font=`500 40px ${RF}`;x.fillText(L==="ja"?"あなたの眠りは":"Your sleep is",W/2,250);
+ x.font=`300px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;x.fillText(k.e,W/2,620);
+ x.fillStyle="#FFFFFF";let fs=110;const label=t("cardType",{n:nm(k)});x.font=`900 ${fs}px ${RF}`;while(x.measureText(label).width>W-120&&fs>50){fs-=6;x.font=`900 ${fs}px ${RF}`}x.fillText(label,W/2,800);
+ x.fillStyle="#E2B93B";x.font=`700 48px ${RF}`;x.fillText(stars(rar(k)),W/2,880);
+ x.fillStyle="#ECEAF7";const yl=t("cardYou",{a:fmt(H),n:nm(k),b:fmt(k.h)});let f2=42;x.font=`500 ${f2}px ${RF}`;while(x.measureText(yl).width>W-100&&f2>26){f2-=2;x.font=`500 ${f2}px ${RF}`}x.fillText(yl,W/2,980);
+ const r=D.filter(a=>a.h>H).length+1;x.fillStyle="#A9A7C8";x.font=`500 34px ${RF}`;
+ x.fillText(L==="ja"?`${D.length}種の生き物の中で、長く眠る順に${r}番目`:`#${r} of ${D.length} creatures by sleep length`,W/2,1045);
+ x.fillStyle="rgba(255,255,255,.12)";x.fillRect(90,1150,W-180,2);
+ x.fillStyle="#A9A7C8";x.font=`500 30px ${RF}`;x.fillText(L==="ja"?"あなたはどの生き物と同じくらい眠る？":"Which creature sleeps like you?",W/2,1220);
+ x.fillStyle="#ECEAF7";x.font=`500 26px system-ui,sans-serif`;x.fillText(PUBLIC_URL.replace("https://",""),W/2,1270);
+ return c;
+}
+let cardName=null, cardTimer=null, cardURL="";
+function cardAnimal(){const top=nearest(H).slice(0,3);let k=top.find(a=>a.n===cardName);if(!k){k=top[0];cardName=k.n}return {k,top}}
+function renderCardPanel(){
+ const {k,top}=cardAnimal();
+ $("#cardPick").innerHTML=top.map(a=>`<button role="radio" aria-checked="${a===k}" data-cn="${a.n}"><span class="e" aria-hidden="true">${a.e}</span><span><b>${nm(a)}</b><small>${fmt(a.h)}</small></span><span class="chk">✓</span></button>`).join("");
+ $("#cardNow").innerHTML=t("cardNowTxt",{e:k.e,n:nm(k)});
+ $("#cardBtn").textContent=t("cardSave",{n:nm(k)});
+ clearTimeout(cardTimer); cardTimer=setTimeout(async()=>{const c=await makeCard(k);cardURL=c.toDataURL("image/png");$("#cardPrev").innerHTML=`<img src="${cardURL}" alt="${t("cardType",{n:nm(k)})}">`},250);
+}
+$("#cardPick").addEventListener("click",e=>{const b=e.target.closest("[data-cn]");if(!b)return;cardName=b.dataset.cn;$("#shareMsg").textContent="";$("#shareBox").hidden=true;renderCardPanel()});
+$("#cardBtn").addEventListener("click",async()=>{
+ const msg=$("#shareMsg"); $("#shareBox").hidden=true; msg.textContent="";
+ const {k}=cardAnimal(); const c=await makeCard(k);
+ $("#cardPrev").innerHTML=`<img src="${c.toDataURL("image/png")}" alt="${t("cardType",{n:nm(k)})}">`;
+ if(dl){ try{const blob=await new Promise(r=>c.toBlob(r,"image/png")); await dl.save({filename:"nemuri-zukan.png",data:blob}); msg.textContent=t("cardSaved"); return}
+  catch(e){ if(e&&e.code==="declined"){msg.textContent=t("cardDeclined");return} } }
+ msg.textContent=t("cardHold");
+});
+
+/* ---- タブ ---- */
+function showTab(name){
+ $$(".page").forEach(p=>p.hidden=p.dataset.page!==name);
+ $$("[data-tab]").forEach(b=>{if(b.dataset.tab===name)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+ window.scrollTo(0,0);
+}
+$$("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+$("#listStatus").addEventListener("click",e=>{if(e.target.id==="backAll"){group="all";$$("[data-g]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.g==="all"));render()}});
+
+applyLang(); newQuiz(); render();
+</script>
+</body>
+</html>
