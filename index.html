@@ -228,7 +228,7 @@ details.notes[open] summary{margin-bottom:10px}
     <svg class="dial" viewBox="0 0 180 180" role="img" aria-labelledby="pct">
       <circle cx="90" cy="90" r="72" fill="none" stroke="var(--awake)" stroke-width="22"/>
       <circle id="arc" cx="90" cy="90" r="72" fill="none" stroke="var(--sleep)" stroke-width="22" stroke-linecap="round" transform="rotate(-90 90 90)" stroke-dasharray="0 999"/>
-      <text x="90" y="86" text-anchor="middle" font-size="28">🌙</text>
+      <text id="moon" x="90" y="86" text-anchor="middle" font-size="28" style="cursor:pointer;-webkit-user-select:none;user-select:none">🌙</text>
       <text id="pct" x="90" y="114" text-anchor="middle" font-size="13" fill="var(--sub)"></text>
     </svg>
     <div class="controls">
@@ -533,7 +533,7 @@ ja:{title:"ねむりの図鑑",lead:"あなたの睡眠時間を入れると、�
  kHalf:"半球睡眠",kStand:"立ち寝",kMicro:"細切れ睡眠",
  you:"あなた",details:"くわしく",rel:"信頼度",src:"出典",RA:"学術文献",RB:"一般解説",RC:"推定",extinctTag:"絶滅・推定値",
  quizTitle:"どっちが長く眠る？",quizLead:"長く眠ると思うほうをタップしてください。答えると豆知識と、図鑑への登録がついてきます。",qNext:"次の問題",qRight:"正解！",qWrong:"ざんねん。",qDiff:"{w}のほうが{d}長く眠ります。",qScore:"正解 <strong>{a}</strong> / {b}",qStreak:"連続正解 <strong>{c}</strong>",qBest:"最高記録 <strong>{d}</strong>",qMore:"{n}の豆知識を見る",
- collTitle:"ねむり図鑑コレクション",collLead:"生き物の詳細を開いたり、クイズに出てきたりすると図鑑に登録されます。全種の発見をめざしてみてください。",collCount:"発見 <strong>{a}</strong> / {b} 種（{p}%）",rand:"🎲 ランダムに出会う",unknown:"？？？",complete:"🎉 全種コンプリート！おつかれさまでした。",
+ collTitle:"ねむり図鑑コレクション",secTitle:"マリリン",secTag:"🔒 シークレット",secNote:"このキャラクターは架空の存在です。図鑑の生き物データとは関係ありません。",secProfL:"プロフィール",secProf:"ねむりの図鑑にこっそり住んでいる女の子。いつもポケットにチョコレートを入れています。",secLikeL:"好きなもの",secLike:"チョコレート。板チョコは端から少しずつ、トリュフはひと口で。",secCakeL:"好きなケーキ",secCake:"チーズケーキ、チョコレートケーキ、モンブラン。",secTasteL:"好きな味",secTaste:"チョコ、キャラメル、チョコミント。",secFlowerL:"好きな花",secFlower:"すずらん。",secVegL:"好きな野菜",secVeg:"春菊。甘いものばかりではありません。",secHobbyL:"好きなこと",secHobby:"パズルと、スニーカー集め。",secDislikeL:"苦手なもの",secDislike:"生クリームと、外国のチョコ。チョコなら何でもいいわけではありません。",secSleepL:"睡眠時間",secSleep:"ひみつ。チョコの夢を見ているあいだは、起こさないであげてください。",secWordL:"ひとこと",secWord:"「おやすみ前のひとかけは、歯みがきの前にね。」",secFound:"🍫 シークレットキャラに出会いました",secLocked:"シークレット",secHint:"月を何度か、そっとつついてみると…",secCount:"シークレット <strong>{a}</strong> / 1",collLead:"生き物の詳細を開いたり、クイズに出てきたりすると図鑑に登録されます。全種の発見をめざしてみてください。",collCount:"発見 <strong>{a}</strong> / {b} 種（{p}%）",rand:"🎲 ランダムに出会う",unknown:"？？？",complete:"🎉 全種コンプリート！おつかれさまでした。",
  trivia:"豆知識・ねむりメモ",perDay:"1日の睡眠時間",vsYou:"あなたとくらべると",annual:"この生き物と同じだけ眠ると、起きている時間が1年で約{y}{dir}。",more:"増えます",less:"減ります",annualSame:"あなたとほぼ同じ眠りです。1年たっても差はほとんどありません。",
  formula:"計算式：（{a} − {b}）× 365日 ＝ {c}時間",rank:"全{n}種中、長く眠る順で{r}位",close:"閉じる",prev:"← 短く眠る生き物",next:"長く眠る生き物 →",groupName:"なかま",newFound:"🆕 図鑑に登録しました",photoLbl:"写真・会える場所",humanNote:"ヒトにはいつでも会えます。たとえば鏡の前で。",newTab:"新しいタブで開きます",googleName:"Google検索",linkSafe:"リンク先は、非営利団体ウィキメディア財団が運営するWikipedia・Wikimedia Commonsと、Google検索だけです。どれも新しいタブで開き、送られるのは生き物の名前（または学名）だけです。",photo:"写真を見る",wiki:"Wikipediaで調べる",zoo:"会える動物園・水族館を探す",museum:"化石・標本の展示を探す",zooNote:"飼育している施設は変わるため、訪問前に各施設の公式サイトで確認してください。",museumNote:"写真には、化石や復元図が表示されます。",openHint:"タップで豆知識",
  wd:["日","月","火","水","木","金","土"],pct:"1日の{p}%",chartLabel:"直近7日間の睡眠時間",
@@ -556,7 +556,7 @@ en:{title:"The Sleep Almanac",lead:"Enter how long you sleep and see where you s
  kHalf:"half-brain",kStand:"standing",kMicro:"micro-naps",
  you:"You",details:"Details",rel:"Reliability",src:"Source",RA:"scientific literature",RB:"general reference",RC:"estimate",extinctTag:"extinct · estimate",
  quizTitle:"Who sleeps longer?",quizLead:"Tap the one you think sleeps longer. Each answer reveals trivia and adds both creatures to your almanac.",qNext:"Next question",qRight:"Correct!",qWrong:"Not quite.",qDiff:"The {w} sleeps {d} longer.",qScore:"Correct <strong>{a}</strong> / {b}",qStreak:"Streak <strong>{c}</strong>",qBest:"Best <strong>{d}</strong>",qMore:"Trivia: {n}",
- collTitle:"Almanac collection",collLead:"Creatures join your almanac when you open their details or meet them in the quiz. Try to find them all.",collCount:"Found <strong>{a}</strong> / {b} ({p}%)",rand:"🎲 Meet a random creature",unknown:"???",complete:"🎉 Complete! You've found every creature.",
+ collTitle:"Almanac collection",secTitle:"Marilyn",secTag:"🔒 Secret",secNote:"This character is fictional and has nothing to do with the almanac's animal data.",secProfL:"Profile",secProf:"A girl who secretly lives in the Sleep Almanac, always with chocolate in her pocket.",secLikeL:"Favorite thing",secLike:"Chocolate. Bars nibbled from the corner, truffles in one bite.",secCakeL:"Favorite cakes",secCake:"Cheesecake, chocolate cake, and Mont Blanc.",secTasteL:"Favorite flavors",secTaste:"Chocolate, caramel, and mint chocolate.",secFlowerL:"Favorite flower",secFlower:"Lily of the valley.",secVegL:"Favorite vegetable",secVeg:"Shungiku (garland chrysanthemum). Not everything has to be sweet.",secHobbyL:"Likes to",secHobby:"Do puzzles and collect sneakers.",secDislikeL:"Not a fan of",secDislike:"Whipped cream and foreign chocolate. Not just any chocolate will do.",secSleepL:"Sleep per day",secSleep:"A secret. If she's dreaming of chocolate, please don't wake her.",secWordL:"A word from her",secWord:"\"One piece before bed — but before you brush your teeth.\"",secFound:"🍫 You found the secret character",secLocked:"Secret",secHint:"Try gently tapping the moon a few times…",secCount:"Secret <strong>{a}</strong> / 1",collLead:"Creatures join your almanac when you open their details or meet them in the quiz. Try to find them all.",collCount:"Found <strong>{a}</strong> / {b} ({p}%)",rand:"🎲 Meet a random creature",unknown:"???",complete:"🎉 Complete! You've found every creature.",
  trivia:"Trivia & sleep notes",perDay:"Sleep per day",vsYou:"Compared with you",annual:"Sleeping like this creature, you'd have about {y} {dir} awake time per year.",more:"more",less:"less",annualSame:"Almost the same as you — barely any difference over a year.",
  formula:"Formula: ({a} − {b}) × 365 days = {c} h",rank:"Rank {r} of {n} by sleep length",close:"Close",prev:"← Sleeps less",next:"Sleeps more →",groupName:"Group",newFound:"🆕 Added to your almanac",photoLbl:"Photos & where to see them",humanNote:"You can meet a human any time — try the nearest mirror.",newTab:"opens in a new tab",googleName:"Google Search",linkSafe:"Links go only to Wikipedia and Wikimedia Commons (run by the non-profit Wikimedia Foundation) and Google Search. Each opens in a new tab and sends only the creature's name (or scientific name).",photo:"See photos",wiki:"Look up on Wikipedia",zoo:"Find zoos & aquariums",museum:"Find fossil exhibits",zooNote:"Which zoos keep an animal changes, so check official sites before visiting.",museumNote:"Photos show fossils and reconstructions.",openHint:"tap for trivia",
  wd:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],pct:"{p}% of the day",chartLabel:"Sleep over the last 7 days",
@@ -737,16 +737,35 @@ $("#dlg").addEventListener("click",e=>{
 });
 function onPick(e){const el=e.target.closest("[data-n]"); if(el&&el.dataset.n!=="")openDetail(+el.dataset.n)}
 ["#list","#kin","#grid"].forEach(id=>$(id).addEventListener("click",onPick));
+$("#grid").addEventListener("click",e=>{if(e.target.closest("[data-secret]"))openSecret()});
 $("#list").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset.n){e.preventDefault();openDetail(+e.target.dataset.n)}});
 
+/* ---- シークレットキャラ：マリリン（検索・画像リンクなし） ---- */
+let secretFound=store.get("sleepSecret",false), moonTaps=[];
+$("#moon").addEventListener("click",()=>{const now=Date.now();moonTaps=moonTaps.filter(x=>now-x<3000);moonTaps.push(now);if(moonTaps.length>=5){moonTaps=[];openSecret()}});
+function openSecret(){
+ const isNew=!secretFound; secretFound=true; store.set("sleepSecret",true); cur=-1;
+ const sec=(l,b)=>`<div class="lbl">${t(l)}</div><p>${t(b)}</p>`;
+ $("#dlgBody").innerHTML=`
+  <div class="head"><div class="big-e" aria-hidden="true">👧🍫</div><div>
+   <h3 id="dlgTitle">${t("secTitle")}</h3><div class="sub">${L==="ja"?"Marilyn":"マリリン"}</div>
+   <div class="chips"><span class="chip st r3">${t("secTag")}</span></div></div></div>
+  ${isNew?`<p class="hint" style="margin-top:10px">${t("secFound")}</p>`:""}
+  ${sec("secProfL","secProf")}${sec("secLikeL","secLike")}${sec("secCakeL","secCake")}${sec("secTasteL","secTaste")}${sec("secFlowerL","secFlower")}${sec("secVegL","secVeg")}${sec("secHobbyL","secHobby")}${sec("secDislikeL","secDislike")}${sec("secSleepL","secSleep")}${sec("secWordL","secWord")}
+  <p class="src" style="margin-top:14px">${t("secNote")}</p>
+  <div class="dnav"><button class="primary" id="dlgClose" style="margin-left:auto">${t("close")}</button></div>`;
+ const dlg=$("#dlg"); if(!dlg.open){ if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open","") }
+ renderColl();
+}
 function renderColl(){
  const n=D.length, a=D.filter(x=>seen.has(x.n)).length, p=Math.round(a/n*100);
  $("#progbar").style.width=p+"%";
  $("#collCount").innerHTML=a===n?t("complete"):t("collCount",{a,b:n,p});
+ const secTile=secretFound?`<button class="tile r3" data-secret="1"><span class="e" aria-hidden="true">👧</span>${t("secTitle")}<span class="ts">🍫 ${t("secLocked")}</span></button>`:`<div class="tile no" title="${t("secHint")}"><span class="e" aria-hidden="true">🔒</span>${t("secLocked")}<span class="ts">${t("secHint")}</span></div>`;
  $("#grid").innerHTML=byLen().map(x=>seen.has(x.n)
   ?`<button class="tile r${rar(x)}" data-n="${D.indexOf(x)}"><span class="e" aria-hidden="true">${x.e}</span>${nm(x)}<span class="ts">${stars(rar(x))}</span></button>`
-  :`<div class="tile no" aria-label="${t("unknown")}"><span class="e" aria-hidden="true">${x.e}</span>${t("unknown")}<span class="ts">${stars(rar(x))}</span></div>`).join("");
- $("#rarCount").innerHTML=[3,2,1].map(r=>{const all=D.filter(x=>rar(x)===r);return `<span class="st r${r}">${stars(r)}</span> <strong>${all.filter(x=>seen.has(x.n)).length}</strong> / ${all.length}`}).join("　");
+  :`<div class="tile no" aria-label="${t("unknown")}"><span class="e" aria-hidden="true">${x.e}</span>${t("unknown")}<span class="ts">${stars(rar(x))}</span></div>`).join("")+secTile;
+ $("#rarCount").innerHTML=[3,2,1].map(r=>{const all=D.filter(x=>rar(x)===r);return `<span class="st r${r}">${stars(r)}</span> <strong>${all.filter(x=>seen.has(x.n)).length}</strong> / ${all.length}`}).join("　")+"　"+t("secCount",{a:secretFound?1:0});
 }
 $("#rand").addEventListener("click",()=>{
  const pool=D.filter(x=>!seen.has(x.n)); const list=pool.length?pool:D;
