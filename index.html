@@ -274,6 +274,7 @@ details.notes[open] summary{margin-bottom:10px}
         <div>
           <p class="cardnow" id="cardNow"></p>
           <div class="row-btn"><button class="primary" id="cardBtn"></button><button id="share" data-i="share">テキストでシェア</button></div>
+          <p class="hint" style="margin:6px 0 0" data-i="cardHint"></p>
           <div class="msg" id="shareMsg"></div>
           <textarea class="copy" id="shareBox" rows="3" readonly hidden></textarea>
         </div>
@@ -525,7 +526,7 @@ ja:{title:"ねむりの図鑑",lead:"あなたの睡眠時間を入れると、�
  share:"テキストでシェア",cardBtn:"🖼 結果カードを保存",cardSaved:"保存しました。",cardHold:"画像を長押し（右クリック）して保存できます。",cardDeclined:"保存をキャンセルしました。",cardType:"{n}型",cardYou:"あなた {a}　／　{n} {b}",todayTitle:"今日の一匹",todayMore:"くわしく見る",todayNote:"毎日0時に入れ替わります。",rarity:"レア度",rarRule:"レア度の基準：★★★＝絶滅種・0時間・1時間未満・19時間以上・脳の半分ずつ／細切れに眠る生き物、★★＝哺乳類以外・立ち寝・16時間以上・3時間以下、★＝それ以外。",copied:"コピーしました。貼り付けて共有できます。",copyFail:"下の文章を長押し（選択）してコピーしてください。",
  shareText:"私の睡眠時間は{h}。いちばん近い生き物は{e}{n}（{nh}）でした。 #ねむりの図鑑",
  listTitle:"ねむりの長さ比べ",fAll:"すべて",fLiving:"いまの生き物",fExtinct:"絶滅した生き物（推定）",
- styleLabel:"眠り方",groupLabel:"なかま",gAll:"🌏 すべて",gMammal:"🐾 哺乳類",gBird:"🐦 鳥類",gReptile:"🦎 爬虫類",gAmphibian:"🐸 両生類",gFish:"🐟 魚類",gInsect:"🐜 昆虫",gExtinct:"🦴 絶滅（推定）",tabHome:"くらべる",tabQuiz:"クイズ",tabList:"いちらん",tabZukan:"図鑑",listLead:"上のボタンで、なかまごとに切り替えられます。行をタップすると豆知識が開きます。",nowShow:"表示中",nowCount:"{n}種",backAll:"すべてに戻す",notesTitle:"出典・注意事項・プライバシー",cardTitle:"結果カード",cardLead:"カードにする生き物を、あなたに近い3種から選べます。",cardSel:"選択中",cardNowTxt:"「あなたの眠りは <strong>{e} {n}型</strong>」のカードを作ります。",cardSave:"🖼 {n}型のカードを保存",sAll:"すべて",sHalf:"脳の半分ずつ眠る",sStand:"立ったまま眠れる",sMicro:"細切れに眠る",
+ styleLabel:"眠り方",groupLabel:"なかま",gAll:"🌏 すべて",gMammal:"🐾 哺乳類",gBird:"🐦 鳥類",gReptile:"🦎 爬虫類",gAmphibian:"🐸 両生類",gFish:"🐟 魚類",gInsect:"🐜 昆虫",gExtinct:"🦴 絶滅（推定）",tabHome:"くらべる",tabQuiz:"クイズ",tabList:"いちらん",tabZukan:"図鑑",listLead:"上のボタンで、なかまごとに切り替えられます。行をタップすると豆知識が開きます。",nowShow:"表示中",nowCount:"{n}種",backAll:"すべてに戻す",notesTitle:"出典・注意事項・プライバシー",cardTitle:"結果カード",cardLead:"カードにする生き物を、あなたに近い3種から選べます。",cardSel:"選択中",cardNowTxt:"「あなたの眠りは <strong>{e} {n}型</strong>」のカードを作ります。",cardSave:"🖼 {n}型のカードを保存",cardHint:"スマホでは共有メニューが開きます。「画像を保存」を選ぶと写真に保存されます。",cardShared:"共有メニューを開きました。",cardDownloaded:"画像をダウンロードしました。",sAll:"すべて",sHalf:"脳の半分ずつ眠る",sStand:"立ったまま眠れる",sMicro:"細切れに眠る",
  dHalf:"左右の脳を片方ずつ眠らせ、もう片方は起きたまま。泳ぎ続けたり、飛び続けたり、片目で天敵を見張ったりできます。",
  dStand:"脚の関節を固定する仕組みで、立ったままうとうとできます。ただし深い眠りには横になる必要がある種が多いです。",
  dMicro:"数秒の居眠りを何千回もくり返し、合計で睡眠時間をかせぎます。",
@@ -548,7 +549,7 @@ en:{title:"The Sleep Almanac",lead:"Enter how long you sleep and see where you s
  share:"Share as text",cardBtn:"🖼 Save result card",cardSaved:"Saved.",cardHold:"Press and hold (or right-click) the image to save it.",cardDeclined:"Save cancelled.",cardType:"{n} type",cardYou:"You {a}　/　{n} {b}",todayTitle:"Creature of the day",todayMore:"See details",todayNote:"Changes every day at midnight.",rarity:"Rarity",rarRule:"Rarity: ★★★ = extinct, 0 h, under 1 h, 19 h or more, half-brain or micro-nap sleepers; ★★ = non-mammals, standing sleepers, 16 h or more, 3 h or less; ★ = the rest.",copied:"Copied. Paste it anywhere to share.",copyFail:"Select the text below and copy it.",
  shareText:"I sleep {h} a day. My closest match: {e} {n} ({nh}). #SleepAlmanac",
  listTitle:"Who sleeps the longest",fAll:"All",fLiving:"Living",fExtinct:"Extinct (estimated)",
- styleLabel:"Sleep style",groupLabel:"Group",gAll:"🌏 All",gMammal:"🐾 Mammals",gBird:"🐦 Birds",gReptile:"🦎 Reptiles",gAmphibian:"🐸 Amphibians",gFish:"🐟 Fish",gInsect:"🐜 Insects",gExtinct:"🦴 Extinct (est.)",tabHome:"Compare",tabQuiz:"Quiz",tabList:"List",tabZukan:"Almanac",listLead:"Switch groups with the buttons above. Tap a row for trivia.",nowShow:"Showing",nowCount:"{n} species",backAll:"Show all",notesTitle:"Sources, notes & privacy",cardTitle:"Result card",cardLead:"Pick which of your 3 closest creatures goes on the card.",cardSel:"Selected",cardNowTxt:"Your card will say: \"Your sleep is <strong>{e} {n} type</strong>\".",cardSave:"🖼 Save the {n} card",sAll:"All",sHalf:"Half-brain sleep",sStand:"Sleeps standing",sMicro:"Micro-naps",
+ styleLabel:"Sleep style",groupLabel:"Group",gAll:"🌏 All",gMammal:"🐾 Mammals",gBird:"🐦 Birds",gReptile:"🦎 Reptiles",gAmphibian:"🐸 Amphibians",gFish:"🐟 Fish",gInsect:"🐜 Insects",gExtinct:"🦴 Extinct (est.)",tabHome:"Compare",tabQuiz:"Quiz",tabList:"List",tabZukan:"Almanac",listLead:"Switch groups with the buttons above. Tap a row for trivia.",nowShow:"Showing",nowCount:"{n} species",backAll:"Show all",notesTitle:"Sources, notes & privacy",cardTitle:"Result card",cardLead:"Pick which of your 3 closest creatures goes on the card.",cardSel:"Selected",cardNowTxt:"Your card will say: \"Your sleep is <strong>{e} {n} type</strong>\".",cardSave:"🖼 Save the {n} card",cardHint:"On a phone, the share menu opens — choose \"Save Image\" to keep it in your photos.",cardShared:"Share menu opened.",cardDownloaded:"Image downloaded.",sAll:"All",sHalf:"Half-brain sleep",sStand:"Sleeps standing",sMicro:"Micro-naps",
  dHalf:"One side of the brain sleeps while the other stays awake — enough to keep swimming, keep flying, or watch for predators with one eye.",
  dStand:"Locking leg joints let them doze upright, though most still need to lie down for deep sleep.",
  dMicro:"Thousands of naps lasting seconds add up to a full night's worth.",
@@ -827,8 +828,17 @@ $("#cardBtn").addEventListener("click",async()=>{
  const msg=$("#shareMsg"); $("#shareBox").hidden=true; msg.textContent="";
  const {k}=cardAnimal(); const c=await makeCard(k);
  $("#cardPrev").innerHTML=`<img src="${c.toDataURL("image/png")}" alt="${t("cardType",{n:nm(k)})}">`;
- if(dl){ try{const blob=await new Promise(r=>c.toBlob(r,"image/png")); await dl.save({filename:"nemuri-zukan.png",data:blob}); msg.textContent=t("cardSaved"); return}
+ const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+ // 1) Claude上：保存の確認画面
+ if(dl){ try{await dl.save({filename:"nemuri-zukan.png",data:blob}); msg.textContent=t("cardSaved"); return}
   catch(e){ if(e&&e.code==="declined"){msg.textContent=t("cardDeclined");return} } }
+ // 2) スマホ：共有メニュー（「画像を保存」で写真に保存）
+ try{ const file=new File([blob],"nemuri-zukan.png",{type:"image/png"});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file]}); msg.textContent=t("cardShared"); return } }
+ catch(e){ if(e&&e.name==="AbortError"){msg.textContent=t("cardDeclined");return} }
+ // 3) パソコン：そのままダウンロード
+ try{ const u=URL.createObjectURL(blob),a=document.createElement("a"); a.href=u; a.download="nemuri-zukan.png"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),5000); msg.textContent=t("cardDownloaded"); return }catch(e){}
+ // 4) どれも使えない環境：長押し
  msg.textContent=t("cardHold");
 });
 
