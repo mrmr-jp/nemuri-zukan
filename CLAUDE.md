@@ -36,3 +36,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 生き物データには必ず出典（`s`）と信頼度（`r`）を付ける。絶滅種の値は推定（`EST`）であることを UI で明示している方針を崩さない。
 - 医療・健康アドバイスではない旨の免責表示がある。睡眠の良し悪しを断定する表現は避ける。
 - JS が動かない環境向けの `<noscript>` 案内がある（ファイルプレビューでは動かない旨）。
+
+## ドキュメント
+
+- 設計書は `docs/design.md`、運用手順は `docs/operation.md`。
+- 変更したら設計書（`docs/design.md`）の変更履歴も更新する。
